@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>웹 탄막 슈팅게임</title>
+
+  <link rel="stylesheet" href="./css/common.css" />
+  <link rel="stylesheet" href="./css/game.css" />
+  <link rel="stylesheet" href="./css/ranking.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+</head>
+<body>
+  <div id="gameWrap">
+    <header id="gameHeader">
+      <h1>웹 탄막 슈팅게임</h1>
+
+      <div id="gameInfo">
+        <span>점수: <strong id="scoreText">0</strong></span>
+        <span>체력: <strong id="lifeText">3</strong></span>
+        <span>폭탄: <strong id="bombText">3</strong></span>
+      </div>
+    </header>
+
+    <main id="gameArea">
+      <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+      <section id="startScreen" class="screen active">
+        <h2>탄막 슈팅게임</h2>
+
+        <p>방향키로 이동하고 Z키로 공격하세요.</p>
+        <p>X키로 폭탄을 사용할 수 있습니다.</p>
+
+        <div class="controlGuide">
+          <p><strong>이동</strong> : 방향키</p>
+          <p><strong>총알 발사</strong> : Z</p>
+          <p><strong>폭탄 사용</strong> : X</p>
+        </div>
+
+        <button id="startButton" type="button">게임 시작</button>
+      </section>
+
+      <section id="characterScreen" class="screen">
+        <h2>캐릭터 선택</h2>
+
+        <div id="characterSelect">
+          <p class="characterMoveGuide">← / → 방향키로 캐릭터를 고르세요</p>
+
+          <div class="characterPreview">
+            <span class="characterArrowText">◀</span>
+
+            <div class="characterDisplay">
+              <div id="characterImageText" class="characterImageText">◆</div>
+              <strong id="characterNameText">호밍 타입</strong>
+            </div>
+
+            <span class="characterArrowText">▶</span>
+          </div>
+
+          <div id="characterDescriptionBox" class="characterDescriptionBox">
+            <p id="characterDescriptionText">
+              보조 유닛의 탄이 적을 따라갑니다.
+            </p>
+          </div>
+
+          <p id="characterGuideText" class="characterConfirmGuide">
+            Z : 설명 보기
+          </p>
+        </div>
+      </section>
+
+      <section id="gameOverScreen" class="screen">
+        <h2>게임 종료</h2>
+
+        <p>최종 점수</p>
+        <strong id="finalScoreText">0</strong>
+
+        <button id="restartButton" type="button">다시 시작</button>
+      </section>
+
+      <section id="nicknameScreen" class="screen">
+        <h2>최고 기록 달성!</h2>
+
+        <p>랭킹에 등록할 닉네임을 입력하세요.</p>
+
+        <input
+          id="nicknameInput"
+          type="text"
+          maxlength="10"
+          placeholder="닉네임 입력"
+          autocomplete="off"
+        />
+
+        <button id="saveRankButton" type="button">기록 저장</button>
+      </section>
+    </main>
+
+    <button id="rankingButton" type="button">랭킹</button>
+
+    <aside id="rankingModal" class="modal">
+      <div class="modalContent">
+        <div class="modalHeader">
+          <h2>TOP 5 랭킹</h2>
+          <button id="closeRankingButton" type="button">닫기</button>
+        </div>
+
+        <ol id="rankingList">
+          <li>기록이 없습니다.</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+
+  <script src="./js/dom.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/state.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/ranking.js"></script>
+  <script src="./js/game.js"></script>
+</body>
+</html>

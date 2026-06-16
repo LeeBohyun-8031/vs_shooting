@@ -1,0 +1,94 @@
+@media (max-width: 560px) {
+  body {
+    overflow: auto;
+  }
+
+  #gameWrap {
+    min-height: 100vh;
+    height: auto;
+    padding: 20px 12px;
+    justify-content: flex-start;
+  }
+
+  #gameHeader {
+    width: 100%;
+    max-width: 480px;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #gameHeader h1 {
+    font-size: 22px;
+  }
+
+  #gameInfo {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #gameArea {
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 3 / 4;
+    height: auto;
+  }
+
+  #gameCanvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .screen {
+    padding: 24px 18px;
+  }
+
+  .screen h2 {
+    font-size: 30px;
+  }
+
+  .controlGuide {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  #characterSelect {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .characterPreview {
+    gap: 10px;
+  }
+
+  .characterArrowText {
+    font-size: 26px;
+  }
+
+  .characterDisplay {
+    width: 180px;
+    min-height: 200px;
+    padding: 18px 14px;
+  }
+
+  .characterImageText {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 16px;
+    font-size: 48px;
+    line-height: 96px;
+  }
+
+  #characterNameText {
+    font-size: 20px;
+  }
+
+  .characterDescriptionBox {
+    width: 100%;
+  }
+
+  #rankingButton {
+    left: 24px;
+    bottom: 24px;
+  }
+}
