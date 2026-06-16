@@ -87,6 +87,42 @@
     width: 100%;
   }
 
+  #difficultySelect {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .difficultyPreview {
+    gap: 10px;
+  }
+
+  .difficultyArrowText {
+    font-size: 26px;
+  }
+
+  .difficultyDisplay {
+    width: 180px;
+    min-height: 200px;
+    padding: 18px 14px;
+  }
+
+  .difficultyImageText {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 16px;
+    font-size: 48px;
+    line-height: 96px;
+  }
+
+  #difficultyNameText {
+    font-size: 20px;
+  }
+
+  .difficultyStarsText {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
   #rankingButton {
     left: 24px;
     bottom: 24px;
