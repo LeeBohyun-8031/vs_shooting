@@ -13,6 +13,9 @@ let selectedCharacterIndex = 0;
 let selectedCharacterType = "homing";
 let characterSelectMode = "select";
 
+let selectedDifficultyIndex = 0;
+let selectedDifficultyType = "easy";
+
 let score = 0;
 let life = INITIAL_LIFE;
 let bomb = INITIAL_BOMB;

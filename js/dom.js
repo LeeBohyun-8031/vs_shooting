@@ -8,6 +8,7 @@ const finalScoreText = document.getElementById("finalScoreText");
 
 const startScreen = document.getElementById("startScreen");
 const characterScreen = document.getElementById("characterScreen");
+const difficultyScreen = document.getElementById("difficultyScreen");
 const gameOverScreen = document.getElementById("gameOverScreen");
 const nicknameScreen = document.getElementById("nicknameScreen");
 
@@ -26,3 +27,8 @@ const characterNameText = document.getElementById("characterNameText");
 const characterDescriptionBox = document.getElementById("characterDescriptionBox");
 const characterDescriptionText = document.getElementById("characterDescriptionText");
 const characterGuideText = document.getElementById("characterGuideText");
+
+const difficultyImageText = document.getElementById("difficultyImageText");
+const difficultyNameText = document.getElementById("difficultyNameText");
+const difficultyStarsText = document.getElementById("difficultyStarsText");
+const difficultyGuideText = document.getElementById("difficultyGuideText");

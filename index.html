@@ -70,6 +70,30 @@
         </div>
       </section>
 
+      <section id="difficultyScreen" class="screen">
+        <h2>난이도 선택</h2>
+
+        <div id="difficultySelect">
+          <p class="difficultyMoveGuide">← / → 방향키로 난이도를 고르세요</p>
+
+          <div class="difficultyPreview">
+            <span class="difficultyArrowText">◀</span>
+
+            <div class="difficultyDisplay">
+              <div id="difficultyImageText" class="difficultyImageText">E</div>
+              <strong id="difficultyNameText">이지</strong>
+              <span id="difficultyStarsText" class="difficultyStarsText">★☆☆☆☆</span>
+            </div>
+
+            <span class="difficultyArrowText">▶</span>
+          </div>
+
+          <p id="difficultyGuideText" class="difficultyConfirmGuide">
+            Z : 선택
+          </p>
+        </div>
+      </section>
+
       <section id="gameOverScreen" class="screen">
         <h2>게임 종료</h2>
 
@@ -117,6 +141,13 @@
   <script src="./js/state.js"></script>
   <script src="./js/utils.js"></script>
   <script src="./js/ranking.js"></script>
+
+  <script src="./js/scene.js"></script>
+  <script src="./js/effects.js"></script>
+  <script src="./js/player.js"></script>
+  <script src="./js/enemy.js"></script>
+  <script src="./js/renderer.js"></script>
+  <script src="./js/input.js"></script>
   <script src="./js/game.js"></script>
 </body>
 </html>
