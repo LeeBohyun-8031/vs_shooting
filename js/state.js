@@ -4,6 +4,8 @@ const keys = {
   ArrowLeft: false,
   ArrowRight: false,
   KeyZ: false,
+  ShiftLeft: false,
+  ShiftRight: false,
 };
 
 let gameState = "ready";
@@ -23,6 +25,7 @@ let bomb = INITIAL_BOMB;
 let player = null;
 let bullets = [];
 let enemies = [];
+let enemyBullets = [];
 let particles = [];
 let stars = [];
 

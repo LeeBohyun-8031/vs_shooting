@@ -10,6 +10,17 @@ function createInitialPlayer() {
   };
 }
 
+function getPlayerHitbox(playerObject) {
+  const hitboxSize = PLAYER_CONFIG.hitboxSize;
+
+  return {
+    x: playerObject.x + playerObject.width / 2 - hitboxSize / 2,
+    y: playerObject.y + playerObject.height / 2 - hitboxSize / 2,
+    width: hitboxSize,
+    height: hitboxSize,
+  };
+}
+
 function updatePlayer() {
   if (!player) return;
 
@@ -67,6 +78,12 @@ function useBomb() {
     score += Math.floor(enemy.score / 2);
   });
 
+  enemyBullets.forEach((enemyBullet) => {
+    createHitEffect(enemyBullet.x, enemyBullet.y, 3);
+  });
+
   enemies = [];
+  enemyBullets = [];
+
   updateGameInfo();
 }

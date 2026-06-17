@@ -10,23 +10,34 @@ const INITIAL_LIFE = 3;
 const INITIAL_BOMB = 3;
 
 const PLAYER_CONFIG = {
-  width: 36,
-  height: 42,
+  width: 28,
+  height: 34,
   speed: 5,
   invincibleFrame: 90,
+  hitboxSize: 8,
 };
 
 const BULLET_CONFIG = {
-  width: 6,
-  height: 14,
+  width: 5,
+  height: 12,
   speed: 9,
 };
 
 const ENEMY_CONFIG = {
-  minSize: 28,
-  maxSize: 44,
+  minSize: 22,
+  maxSize: 34,
   minSpeed: 1.8,
   maxAdditionalSpeed: 2,
+};
+
+const ENEMY_BULLET_CONFIG = {
+  radius: 5,
+  hitboxSize: 6,
+  speed: 1.35,
+  aimedSpeed: 1.55,
+  spreadSpeed: 1.45,
+  circleSpeed: 1.25,
+  defaultCooldown: 105,
 };
 
 const PLAYER_DEATH_ANIMATION_DURATION = 1400;

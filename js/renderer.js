@@ -3,8 +3,10 @@ function draw() {
 
   drawBackground();
   drawBullets();
+  drawEnemyBullets();
   drawEnemies();
   drawPlayer();
+  drawPlayerHitbox();
   drawParticles();
   drawPlayerDeathAnimation();
 }
@@ -58,6 +60,35 @@ function drawPlayer() {
   ctx.fill();
 }
 
+function drawPlayerHitbox() {
+  if (!player) return;
+  if (!keys.ShiftLeft && !keys.ShiftRight) return;
+  if (typeof getPlayerHitbox !== "function") return;
+
+  const hitbox = getPlayerHitbox(player);
+  const centerX = hitbox.x + hitbox.width / 2;
+  const centerY = hitbox.y + hitbox.height / 2;
+
+  ctx.save();
+
+  ctx.shadowColor = "#ffffff";
+  ctx.shadowBlur = 10;
+
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowColor = "#38bdf8";
+  ctx.shadowBlur = 12;
+
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+
+  ctx.restore();
+}
+
 function drawBullets() {
   bullets.forEach((bullet) => {
     ctx.fillStyle = "#facc15";
@@ -70,6 +101,34 @@ function drawBullets() {
       bullet.width + 6,
       bullet.height
     );
+  });
+}
+
+function drawEnemyBullets() {
+  enemyBullets.forEach((enemyBullet) => {
+    ctx.save();
+
+    ctx.shadowColor = enemyBullet.glowColor;
+    ctx.shadowBlur = 12;
+
+    ctx.fillStyle = enemyBullet.color;
+    ctx.beginPath();
+    ctx.arc(enemyBullet.x, enemyBullet.y, enemyBullet.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
+    ctx.beginPath();
+    ctx.arc(
+      enemyBullet.x - enemyBullet.radius * 0.25,
+      enemyBullet.y - enemyBullet.radius * 0.25,
+      Math.max(enemyBullet.radius * 0.32, 1.5),
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+
+    ctx.restore();
   });
 }
 

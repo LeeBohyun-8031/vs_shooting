@@ -21,6 +21,7 @@ function resetGame() {
   player = createInitialPlayer();
   bullets = [];
   enemies = [];
+  enemyBullets = [];
   particles = [];
 
   lastShotTime = 0;
@@ -98,6 +99,8 @@ function update(timestamp) {
   updatePlayer();
   updateBullets();
   updateEnemies(timestamp);
+  updateEnemyAttacks();
+  updateEnemyBullets();
 
   if (gameState !== "playing") {
     updateParticles();
@@ -109,6 +112,7 @@ function update(timestamp) {
 
   checkBulletEnemyCollision();
   checkPlayerEnemyCollision();
+  checkPlayerEnemyBulletCollision();
 
   updateGameInfo();
 }
