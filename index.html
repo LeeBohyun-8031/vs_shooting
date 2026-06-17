@@ -6,10 +6,10 @@
 
   <title>웹 탄막 슈팅게임</title>
 
-  <link rel="stylesheet" href="./css/common.css" />
-  <link rel="stylesheet" href="./css/game.css" />
-  <link rel="stylesheet" href="./css/ranking.css" />
-  <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="stylesheet" href="./css/base/common.css" />
+  <link rel="stylesheet" href="./css/game/game.css" />
+  <link rel="stylesheet" href="./css/ui/ranking.css" />
+  <link rel="stylesheet" href="./css/responsive/responsive.css" />
 </head>
 <body>
   <div id="gameWrap">
@@ -136,19 +136,28 @@
     </aside>
   </div>
 
-  <script src="./js/dom.js"></script>
-  <script src="./js/config.js"></script>
-  <script src="./js/state.js"></script>
-  <script src="./js/utils.js"></script>
-  <script src="./js/ranking.js"></script>
-  <script src="./js/scene.js"></script>
-  <script src="./js/effects.js"></script>
-  <script src="./js/player.js"></script>
-  <script src="./js/enemyWave.js"></script>
-  <script src="./js/enemy.js"></script>
-  <script src="./js/enemyBullet.js"></script>
-  <script src="./js/renderer.js"></script>
-  <script src="./js/input.js"></script>
-  <script src="./js/game.js"></script>
+  <script src="./js/core/dom.js"></script>
+  <script src="./js/core/config.js"></script>
+  <script src="./js/core/state.js"></script>
+  <script src="./js/core/utils.js"></script>
+
+  <script src="./js/services/ranking.js"></script>
+  <script src="./js/scenes/scene.js"></script>
+
+  <script src="./js/systems/effects.js"></script>
+
+  <script src="./js/entities/player/player.js"></script>
+
+  <script src="./js/entities/enemy/enemyWave.js"></script>
+  <script src="./js/entities/enemy/enemy.js"></script>
+
+  <script src="./js/entities/enemyBullet/enemyBulletCore.js"></script>
+  <script src="./js/entities/enemyBullet/enemyBulletPattern.js"></script>
+  <script src="./js/entities/enemyBullet/enemyBulletSystem.js"></script>
+
+  <script src="./js/renderer/renderer.js"></script>
+
+  <script src="./js/systems/input.js"></script>
+  <script src="./js/systems/game.js"></script>
 </body>
 </html>
