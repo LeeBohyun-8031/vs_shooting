@@ -2,6 +2,12 @@ function getSelectedDifficultyConfig() {
   return DIFFICULTY_CONFIGS[selectedDifficultyIndex];
 }
 
+function safePlaySfx(type) {
+  if (typeof playSfx === "function") {
+    playSfx(type);
+  }
+}
+
 function openCharacterSelect() {
   gameState = "characterSelect";
   characterSelectMode = "select";
@@ -52,16 +58,20 @@ function moveCharacterSelect(direction) {
     selectedCharacterIndex = 0;
   }
 
+  safePlaySfx("select");
+
   updateCharacterSelectUI();
 }
 
 function showCharacterDetail() {
   characterSelectMode = "detail";
+  safePlaySfx("confirm");
   updateCharacterSelectUI();
 }
 
 function backToCharacterSelect() {
   characterSelectMode = "select";
+  safePlaySfx("select");
   updateCharacterSelectUI();
 }
 
@@ -72,6 +82,7 @@ function confirmCharacterSelect() {
   }
 
   if (characterSelectMode === "detail") {
+    safePlaySfx("confirm");
     openDifficultySelect();
   }
 }
@@ -122,10 +133,14 @@ function moveDifficultySelect(direction) {
     selectedDifficultyIndex = 0;
   }
 
+  safePlaySfx("select");
+
   updateDifficultySelectUI();
 }
 
 function confirmDifficultySelect() {
+  safePlaySfx("gameStart");
+
   updateDifficultySelectUI();
   startGame();
 }

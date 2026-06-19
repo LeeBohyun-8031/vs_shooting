@@ -36,6 +36,9 @@ function createEnemy(options) {
     shotCount: 0,
     shotLimit: options.shotLimit ?? 1,
     onlyShootOnWait: options.onlyShootOnWait ?? false,
+
+    visibleShotAge: 0,
+    scheduledShots: [],
   };
 }
 
@@ -241,6 +244,8 @@ function checkBulletEnemyCollision() {
       bullets.splice(bulletIndex, 1);
       enemy.hp -= 1;
 
+      playSfx("enemyHit");
+
       createHitEffect(
         bullet.x + bullet.width / 2,
         bullet.y,
@@ -249,6 +254,8 @@ function checkBulletEnemyCollision() {
 
       if (enemy.hp <= 0) {
         score += enemy.score;
+
+        playSfx("enemyDestroy");
 
         createExplosion(
           enemy.x + enemy.width / 2,
@@ -276,6 +283,8 @@ function checkPlayerEnemyCollision() {
 
     enemies.splice(i, 1);
     life -= 1;
+
+    playSfx("playerHit");
 
     createExplosion(
       enemy.x + enemy.width / 2,

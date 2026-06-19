@@ -56,6 +56,8 @@ function shootBullet() {
     speed: BULLET_CONFIG.speed,
   });
 
+  playSfx("shoot");
+
   lastShotTime = now;
 }
 
@@ -72,6 +74,8 @@ function useBomb() {
   if (bomb <= 0) return;
 
   bomb -= 1;
+
+  playSfx("bomb");
 
   enemies.forEach((enemy) => {
     createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, 12);

@@ -136,6 +136,8 @@ function checkPlayerEnemyBulletCollision() {
     enemyBullets.splice(i, 1);
     life -= 1;
 
+    playSfx("playerHit");
+
     createHitEffect(
       playerHitbox.x + playerHitbox.width / 2,
       playerHitbox.y + playerHitbox.height / 2,

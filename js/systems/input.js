@@ -6,6 +6,18 @@ function resetInputState() {
   bombPressed = false;
 }
 
+function safeUnlockSound() {
+  if (typeof unlockSound === "function") {
+    unlockSound();
+  }
+}
+
+function playInputSfx(type) {
+  if (typeof playSfx === "function") {
+    playSfx(type);
+  }
+}
+
 function handleCharacterSelectKeyDown(event) {
   if (event.code === "ArrowLeft") {
     event.preventDefault();
@@ -57,6 +69,8 @@ function handleDifficultySelectKeyDown(event) {
 }
 
 function handleKeyDown(event) {
+  safeUnlockSound();
+
   if (gameState === "characterSelect") {
     handleCharacterSelectKeyDown(event);
     return;
@@ -83,11 +97,13 @@ function handleKeyDown(event) {
 
   if (event.code === "Enter") {
     if (startScreen.classList.contains("active")) {
+      playInputSfx("gameStart");
       openCharacterSelect();
       return;
     }
 
     if (gameOverScreen.classList.contains("active")) {
+      playInputSfx("confirm");
       openCharacterSelect();
       return;
     }
@@ -114,11 +130,28 @@ function bindEvents() {
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("keyup", handleKeyUp);
 
-  startButton.addEventListener("click", openCharacterSelect);
-  restartButton.addEventListener("click", openCharacterSelect);
-  saveRankButton.addEventListener("click", saveCurrentScore);
+  startButton.addEventListener("click", () => {
+    safeUnlockSound();
+    playInputSfx("gameStart");
+    openCharacterSelect();
+  });
 
-  rankingButton.addEventListener("click", openRankingModal);
+  restartButton.addEventListener("click", () => {
+    safeUnlockSound();
+    playInputSfx("confirm");
+    openCharacterSelect();
+  });
+
+  saveRankButton.addEventListener("click", () => {
+    safeUnlockSound();
+    saveCurrentScore();
+  });
+
+  rankingButton.addEventListener("click", () => {
+    safeUnlockSound();
+    openRankingModal();
+  });
+
   closeRankingButton.addEventListener("click", closeRankingModal);
 
   rankingModal.addEventListener("click", (event) => {
