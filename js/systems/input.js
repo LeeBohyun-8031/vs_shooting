@@ -152,6 +152,16 @@ function bindEvents() {
     openRankingModal();
   });
 
+  if (soundToggleButton) {
+    soundToggleButton.addEventListener("click", () => {
+      safeUnlockSound();
+
+      if (typeof toggleSound === "function") {
+        toggleSound();
+      }
+    });
+  }
+
   closeRankingButton.addEventListener("click", closeRankingModal);
 
   rankingModal.addEventListener("click", (event) => {

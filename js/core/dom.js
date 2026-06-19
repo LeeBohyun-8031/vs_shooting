@@ -18,6 +18,7 @@ const saveRankButton = document.getElementById("saveRankButton");
 const nicknameInput = document.getElementById("nicknameInput");
 
 const rankingButton = document.getElementById("rankingButton");
+const soundToggleButton = document.getElementById("soundToggleButton");
 const rankingModal = document.getElementById("rankingModal");
 const closeRankingButton = document.getElementById("closeRankingButton");
 const rankingList = document.getElementById("rankingList");

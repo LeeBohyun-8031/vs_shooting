@@ -1,7 +1,17 @@
+const SOUND_ENABLED_KEY = "web_shooting_game_sound_enabled";
+
 let audioContext = null;
 let masterGain = null;
-let soundEnabled = true;
+let soundEnabled = loadSoundEnabled();
 let soundVolume = 0.35;
+
+function loadSoundEnabled() {
+  return localStorage.getItem(SOUND_ENABLED_KEY) !== "false";
+}
+
+function saveSoundEnabled() {
+  localStorage.setItem(SOUND_ENABLED_KEY, String(soundEnabled));
+}
 
 function initSound() {
   if (audioContext) return;
@@ -10,14 +20,17 @@ function initSound() {
 
   if (!AudioContextClass) {
     soundEnabled = false;
+    updateSoundToggleButton();
     return;
   }
 
   audioContext = new AudioContextClass();
 
   masterGain = audioContext.createGain();
-  masterGain.gain.value = soundVolume;
+  masterGain.gain.value = soundEnabled ? soundVolume : 0;
   masterGain.connect(audioContext.destination);
+
+  updateSoundToggleButton();
 }
 
 function unlockSound() {
@@ -32,14 +45,46 @@ function unlockSound() {
 
 function setSoundEnabled(enabled) {
   soundEnabled = enabled;
+  saveSoundEnabled();
+  updateSoundToggleButton();
+
+  if (masterGain) {
+    masterGain.gain.value = soundEnabled ? soundVolume : 0;
+  }
+}
+
+function toggleSound() {
+  setSoundEnabled(!soundEnabled);
+
+  if (soundEnabled) {
+    playSfx("select");
+  }
 }
 
 function setSoundVolume(volume) {
   soundVolume = clamp(volume, 0, 1);
 
   if (masterGain) {
-    masterGain.gain.value = soundVolume;
+    masterGain.gain.value = soundEnabled ? soundVolume : 0;
   }
+}
+
+function updateSoundToggleButton() {
+  if (!soundToggleButton) return;
+
+  soundToggleButton.textContent = soundEnabled ? "🔊" : "🔇";
+
+  soundToggleButton.setAttribute(
+    "aria-label",
+    soundEnabled ? "효과음 끄기" : "효과음 켜기"
+  );
+
+  soundToggleButton.setAttribute(
+    "title",
+    soundEnabled ? "효과음 끄기" : "효과음 켜기"
+  );
+
+  soundToggleButton.classList.toggle("muted", !soundEnabled);
 }
 
 function playSfx(type) {
