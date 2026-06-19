@@ -75,6 +75,28 @@ function handleDifficultySelectKeyDown(event) {
   }
 }
 
+function handlePauseKeyDown(event) {
+  if (event.code !== "Escape") {
+    return false;
+  }
+
+  event.preventDefault();
+
+  if (gameState === "playing") {
+    playInputSfx("select");
+    pauseGame();
+    return true;
+  }
+
+  if (gameState === "paused") {
+    playInputSfx("confirm");
+    resumeGame();
+    return true;
+  }
+
+  return false;
+}
+
 function handleStartOrRestartKeyDown(event) {
   if (event.code !== "Enter" && event.code !== "KeyZ") {
     return false;
@@ -103,6 +125,15 @@ function handleStartOrRestartKeyDown(event) {
 
 function handleKeyDown(event) {
   safeUnlockSound();
+
+  if (handlePauseKeyDown(event)) {
+    return;
+  }
+
+  if (gameState === "paused") {
+    event.preventDefault();
+    return;
+  }
 
   if (gameState === "characterSelect") {
     handleCharacterSelectKeyDown(event);
@@ -177,6 +208,30 @@ function bindEvents() {
     safeUnlockSound();
     openRankingModal();
   });
+
+  if (resumeButton) {
+    resumeButton.addEventListener("click", () => {
+      safeUnlockSound();
+      playInputSfx("confirm");
+      resumeGame();
+    });
+  }
+
+  if (pauseRestartButton) {
+    pauseRestartButton.addEventListener("click", () => {
+      safeUnlockSound();
+      playInputSfx("gameStart");
+      restartPausedGame();
+    });
+  }
+
+  if (pauseMainButton) {
+    pauseMainButton.addEventListener("click", () => {
+      safeUnlockSound();
+      playInputSfx("select");
+      returnToMainFromPause();
+    });
+  }
 
   if (soundToggleButton) {
     soundToggleButton.addEventListener("click", () => {

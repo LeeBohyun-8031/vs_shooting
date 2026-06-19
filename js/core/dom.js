@@ -11,11 +11,16 @@ const characterScreen = document.getElementById("characterScreen");
 const difficultyScreen = document.getElementById("difficultyScreen");
 const gameOverScreen = document.getElementById("gameOverScreen");
 const nicknameScreen = document.getElementById("nicknameScreen");
+const pauseScreen = document.getElementById("pauseScreen");
 
 const startButton = document.getElementById("startButton");
 const restartButton = document.getElementById("restartButton");
 const saveRankButton = document.getElementById("saveRankButton");
 const nicknameInput = document.getElementById("nicknameInput");
+
+const resumeButton = document.getElementById("resumeButton");
+const pauseRestartButton = document.getElementById("pauseRestartButton");
+const pauseMainButton = document.getElementById("pauseMainButton");
 
 const rankingButton = document.getElementById("rankingButton");
 const soundToggleButton = document.getElementById("soundToggleButton");

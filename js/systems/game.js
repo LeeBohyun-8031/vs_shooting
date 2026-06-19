@@ -46,6 +46,8 @@ function startGame() {
 
   gameState = "playing";
 
+  hidePauseScreen();
+
   startScreen.classList.remove("active");
   characterScreen.classList.remove("active");
   difficultyScreen.classList.remove("active");
@@ -58,9 +60,83 @@ function startGame() {
   animationId = requestAnimationFrame(gameLoop);
 }
 
+function pauseGame() {
+  if (gameState !== "playing") return;
+
+  gameState = "paused";
+  resetInputState();
+
+  cancelAnimationFrame(animationId);
+
+  if (pauseScreen) {
+    pauseScreen.classList.add("active");
+  }
+}
+
+function resumeGame() {
+  if (gameState !== "paused") return;
+
+  gameState = "playing";
+  resetInputState();
+
+  hidePauseScreen();
+
+  lastEnemySpawnTime = performance.now();
+  lastShotTime = Date.now();
+
+  cancelAnimationFrame(animationId);
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+function restartPausedGame() {
+  if (gameState !== "paused") return;
+
+  hidePauseScreen();
+
+  resetInputState();
+  resetGame();
+
+  gameState = "playing";
+
+  rankingButton.classList.add("hidden");
+
+  cancelAnimationFrame(animationId);
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+function returnToMainFromPause() {
+  if (gameState !== "paused") return;
+
+  hidePauseScreen();
+
+  cancelAnimationFrame(animationId);
+  resetInputState();
+  resetGame();
+
+  gameState = "ready";
+
+  startScreen.classList.add("active");
+  characterScreen.classList.remove("active");
+  difficultyScreen.classList.remove("active");
+  gameOverScreen.classList.remove("active");
+  nicknameScreen.classList.remove("active");
+
+  rankingButton.classList.remove("hidden");
+
+  draw();
+}
+
+function hidePauseScreen() {
+  if (!pauseScreen) return;
+
+  pauseScreen.classList.remove("active");
+}
+
 function endGame() {
   gameState = "gameOver";
   cancelAnimationFrame(animationId);
+
+  hidePauseScreen();
 
   finalScoreText.textContent = score;
   rankingButton.classList.remove("hidden");

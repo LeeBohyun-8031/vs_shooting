@@ -36,6 +36,7 @@
           <p><strong>이동</strong> : 방향키</p>
           <p><strong>총알 발사</strong> : Z</p>
           <p><strong>폭탄 사용</strong> : X</p>
+          <p><strong>일시정지</strong> : ESC</p>
         </div>
 
         <button id="startButton" type="button">게임 시작</button>
@@ -65,7 +66,7 @@
           </div>
 
           <p id="characterGuideText" class="characterConfirmGuide">
-            Z : 설명 보기
+            Z : 선택
           </p>
         </div>
       </section>
@@ -89,7 +90,7 @@
           </div>
 
           <p id="difficultyGuideText" class="difficultyConfirmGuide">
-            Z : 선택
+            Z : 결정 / X : 돌아가기
           </p>
         </div>
       </section>
@@ -117,6 +118,18 @@
         />
 
         <button id="saveRankButton" type="button">기록 저장</button>
+      </section>
+
+      <section id="pauseScreen" class="screen pause-screen">
+        <div class="pause-panel">
+          <h2 class="pause-title">PAUSE</h2>
+
+          <button id="resumeButton" type="button">이어하기</button>
+          <button id="pauseRestartButton" type="button">다시시작</button>
+          <button id="pauseMainButton" type="button">메인화면</button>
+
+          <p class="pause-guide">ESC : 이어하기</p>
+        </div>
       </section>
     </main>
 
