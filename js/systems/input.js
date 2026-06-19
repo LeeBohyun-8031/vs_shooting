@@ -66,6 +66,39 @@ function handleDifficultySelectKeyDown(event) {
     confirmDifficultySelect();
     return;
   }
+
+  if (event.code === "KeyX") {
+    event.preventDefault();
+    playInputSfx("select");
+    openCharacterSelect();
+    return;
+  }
+}
+
+function handleStartOrRestartKeyDown(event) {
+  if (event.code !== "Enter" && event.code !== "KeyZ") {
+    return false;
+  }
+
+  if (startScreen.classList.contains("active")) {
+    event.preventDefault();
+
+    playInputSfx("gameStart");
+    openCharacterSelect();
+
+    return true;
+  }
+
+  if (gameOverScreen.classList.contains("active")) {
+    event.preventDefault();
+
+    playInputSfx("confirm");
+    openCharacterSelect();
+
+    return true;
+  }
+
+  return false;
 }
 
 function handleKeyDown(event) {
@@ -78,6 +111,10 @@ function handleKeyDown(event) {
 
   if (gameState === "difficultySelect") {
     handleDifficultySelectKeyDown(event);
+    return;
+  }
+
+  if (handleStartOrRestartKeyDown(event)) {
     return;
   }
 
@@ -96,19 +133,8 @@ function handleKeyDown(event) {
   }
 
   if (event.code === "Enter") {
-    if (startScreen.classList.contains("active")) {
-      playInputSfx("gameStart");
-      openCharacterSelect();
-      return;
-    }
-
-    if (gameOverScreen.classList.contains("active")) {
-      playInputSfx("confirm");
-      openCharacterSelect();
-      return;
-    }
-
     if (nicknameScreen.classList.contains("active")) {
+      event.preventDefault();
       saveCurrentScore();
     }
   }

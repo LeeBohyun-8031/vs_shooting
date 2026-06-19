@@ -22,6 +22,7 @@ function resetGame() {
   bullets = [];
   enemies = [];
   enemyBullets = [];
+  items = [];
   particles = [];
 
   lastShotTime = 0;
@@ -31,6 +32,10 @@ function resetGame() {
   deathAnimationStartTime = 0;
   deathAnimationX = 0;
   deathAnimationY = 0;
+
+  if (typeof resetItems === "function") {
+    resetItems();
+  }
 
   updateGameInfo();
 }
@@ -101,6 +106,10 @@ function update(timestamp) {
   updateEnemies(timestamp);
   updateEnemyAttacks();
   updateEnemyBullets();
+
+  if (typeof updateItems === "function") {
+    updateItems();
+  }
 
   if (gameState !== "playing") {
     updateParticles();

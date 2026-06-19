@@ -232,6 +232,17 @@ function isEnemyOutOfScreen(enemy) {
   );
 }
 
+function isEnemyAttackable(enemy) {
+  if (!enemy) return false;
+
+  return (
+    enemy.x >= 0 &&
+    enemy.x + enemy.width <= CANVAS_WIDTH &&
+    enemy.y >= 0 &&
+    enemy.y + enemy.height <= CANVAS_HEIGHT
+  );
+}
+
 function checkBulletEnemyCollision() {
   for (let bulletIndex = bullets.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
     const bullet = bullets[bulletIndex];
@@ -239,10 +250,13 @@ function checkBulletEnemyCollision() {
     for (let enemyIndex = enemies.length - 1; enemyIndex >= 0; enemyIndex -= 1) {
       const enemy = enemies[enemyIndex];
 
+      if (!isEnemyAttackable(enemy)) continue;
       if (!isColliding(bullet, enemy)) continue;
 
       bullets.splice(bulletIndex, 1);
-      enemy.hp -= 1;
+
+      const bulletDamage = getPlayerBulletDamage(bullet);
+      enemy.hp -= bulletDamage;
 
       playSfx("enemyHit");
 
@@ -253,6 +267,10 @@ function checkBulletEnemyCollision() {
       );
 
       if (enemy.hp <= 0) {
+        if (typeof dropItemFromEnemy === "function") {
+          dropItemFromEnemy(enemy);
+        }
+
         score += enemy.score;
 
         playSfx("enemyDestroy");
@@ -269,6 +287,18 @@ function checkBulletEnemyCollision() {
       break;
     }
   }
+}
+
+function getPlayerBulletDamage(bullet) {
+  if (!bullet) return 1;
+
+  const damage = Number(bullet.damage);
+
+  if (!Number.isFinite(damage)) {
+    return 1;
+  }
+
+  return Math.max(damage, 0);
 }
 
 function checkPlayerEnemyCollision() {

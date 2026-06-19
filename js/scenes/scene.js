@@ -36,12 +36,12 @@ function updateCharacterSelectUI() {
 
   if (characterSelectMode === "select") {
     characterDescriptionBox.classList.remove("active");
-    characterGuideText.textContent = "Z : 설명 보기";
+    characterGuideText.textContent = "Z : 선택";
   }
 
   if (characterSelectMode === "detail") {
     characterDescriptionBox.classList.add("active");
-    characterGuideText.textContent = "Z : 선택 / X : 돌아가기";
+    characterGuideText.textContent = "Z : 결정 / X : 돌아가기";
   }
 }
 
@@ -65,13 +65,17 @@ function moveCharacterSelect(direction) {
 
 function showCharacterDetail() {
   characterSelectMode = "detail";
+
   safePlaySfx("confirm");
+
   updateCharacterSelectUI();
 }
 
 function backToCharacterSelect() {
   characterSelectMode = "select";
+
   safePlaySfx("select");
+
   updateCharacterSelectUI();
 }
 
@@ -119,7 +123,7 @@ function updateDifficultySelectUI() {
   difficultyImageText.textContent = difficulty.imageText;
   difficultyNameText.textContent = difficulty.name;
   difficultyStarsText.textContent = createDifficultyStars(difficulty.starCount);
-  difficultyGuideText.textContent = "Z : 선택";
+  difficultyGuideText.textContent = "Z : 선택 / X : 돌아가기";
 }
 
 function moveDifficultySelect(direction) {

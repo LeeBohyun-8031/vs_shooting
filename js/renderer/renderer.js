@@ -5,6 +5,8 @@ function draw() {
   drawBullets();
   drawEnemyBullets();
   drawEnemies();
+  drawItems();
+  drawAssistUnits();
   drawPlayer();
   drawPlayerHitbox();
   drawParticles();
@@ -60,6 +62,50 @@ function drawPlayer() {
   ctx.fill();
 }
 
+function drawAssistUnits() {
+  if (!player || gameState !== "playing") return;
+  if (typeof getAssistShotPositions !== "function") return;
+
+  const assistPositions = getAssistShotPositions();
+
+  assistPositions.forEach((position) => {
+    drawAssistUnit(position);
+  });
+}
+
+function drawAssistUnit(position) {
+  const isPowerType = player.type === "power";
+
+  const mainColor = isPowerType ? "#facc15" : "#22c55e";
+  const subColor = isPowerType ? "#fef3c7" : "#dcfce7";
+  const glowColor = isPowerType ? "#fde68a" : "#86efac";
+
+  ctx.save();
+
+  ctx.shadowColor = glowColor;
+  ctx.shadowBlur = 14;
+
+  ctx.fillStyle = mainColor;
+  ctx.beginPath();
+  ctx.arc(position.x, position.y, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = subColor;
+  ctx.beginPath();
+  ctx.arc(position.x - 2.5, position.y - 2.5, 2.6, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(position.x, position.y, 10, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
 function drawPlayerHitbox() {
   if (!player) return;
   if (!keys.ShiftLeft && !keys.ShiftRight) return;
@@ -91,17 +137,66 @@ function drawPlayerHitbox() {
 
 function drawBullets() {
   bullets.forEach((bullet) => {
-    ctx.fillStyle = "#facc15";
-    ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+    if (bullet.type === "needle") {
+      drawNeedleBullet(bullet);
+      return;
+    }
 
-    ctx.fillStyle = "rgba(250, 204, 21, 0.35)";
-    ctx.fillRect(
-      bullet.x - 3,
-      bullet.y + 4,
-      bullet.width + 6,
-      bullet.height
-    );
+    drawPlayerBullet(bullet);
   });
+}
+
+function drawPlayerBullet(bullet) {
+  ctx.save();
+
+  ctx.shadowColor = bullet.glowColor || "#bae6fd";
+  ctx.shadowBlur = 10;
+
+  ctx.fillStyle = bullet.color || "#7dd3fc";
+  ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+  ctx.fillRect(
+    bullet.x + bullet.width * 0.25,
+    bullet.y + 2,
+    Math.max(bullet.width * 0.45, 1),
+    Math.max(bullet.height * 0.45, 3)
+  );
+
+  ctx.restore();
+}
+
+function drawNeedleBullet(bullet) {
+  const centerX = bullet.x + bullet.width / 2;
+  const topY = bullet.y;
+  const bottomY = bullet.y + bullet.height;
+  const halfWidth = Math.max(bullet.width * 0.9, 3);
+
+  ctx.save();
+
+  ctx.shadowColor = bullet.glowColor || "#fde68a";
+  ctx.shadowBlur = 12;
+
+  ctx.fillStyle = bullet.color || "#facc15";
+  ctx.beginPath();
+  ctx.moveTo(centerX, topY);
+  ctx.lineTo(centerX - halfWidth, bottomY);
+  ctx.lineTo(centerX + halfWidth, bottomY);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(centerX, topY + 3);
+  ctx.lineTo(centerX, bottomY - 3);
+  ctx.stroke();
+
+  ctx.restore();
 }
 
 function drawEnemyBullets() {
@@ -154,6 +249,43 @@ function drawEnemies() {
     ctx.arc(centerX, centerY, enemy.width / 2 - 3, 0, Math.PI * 2);
     ctx.stroke();
   });
+}
+
+function drawItems() {
+  if (typeof items === "undefined") return;
+
+  items.forEach((item) => {
+    drawItem(item);
+  });
+}
+
+function drawItem(item) {
+  ctx.save();
+
+  ctx.translate(item.x, item.y);
+  ctx.rotate(item.angle);
+
+  ctx.shadowColor = item.glowColor || "#ffffff";
+  ctx.shadowBlur = 12;
+
+  ctx.fillStyle = item.color || "#ffffff";
+  ctx.beginPath();
+  ctx.rect(-item.width / 2, -item.height / 2, item.width, item.height);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = "#111827";
+  ctx.font = "bold 12px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(item.label, 0, 1);
+
+  ctx.restore();
 }
 
 function drawParticles() {

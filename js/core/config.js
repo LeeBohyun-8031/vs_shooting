@@ -43,6 +43,73 @@ const ENEMY_BULLET_CONFIG = {
 const PLAYER_DEATH_ANIMATION_DURATION = 1400;
 const PLAYER_DEATH_PARTICLE_COUNT = 36;
 
+const ITEM_TYPES = {
+  LIFE: "life",
+  POWER: "power",
+  BOMB: "bomb",
+};
+
+const ITEM_CONFIGS = {
+  [ITEM_TYPES.LIFE]: {
+    type: ITEM_TYPES.LIFE,
+    label: "L",
+    name: "목숨 +1",
+    color: "#ef4444",
+    glowColor: "#fecaca",
+    size: 18,
+    fallSpeed: 2.0,
+  },
+  [ITEM_TYPES.POWER]: {
+    type: ITEM_TYPES.POWER,
+    label: "P",
+    name: "파워업",
+    color: "#facc15",
+    glowColor: "#fef08a",
+    size: 18,
+    fallSpeed: 2.15,
+  },
+  [ITEM_TYPES.BOMB]: {
+    type: ITEM_TYPES.BOMB,
+    label: "B",
+    name: "폭탄 +1",
+    color: "#38bdf8",
+    glowColor: "#bae6fd",
+    size: 18,
+    fallSpeed: 2.05,
+  },
+};
+
+const ITEM_DROP_CONFIG = {
+  lifeChance: 0.01,
+  bombChance: 0.03,
+  powerChance: 0.14,
+};
+
+const ITEM_PICKUP_CONFIG = {
+  width: 42,
+  height: 46,
+};
+
+const ITEM_LIMITS = {
+  lifeMax: 9,
+  bombMax: 9,
+};
+
+const POWER_UP_REQUIREMENTS = {
+  easy: {
+    1: 8,
+    2: 22,
+  },
+  normal: {
+    1: 18,
+    2: 45,
+  },
+  hard: {
+    1: 35,
+    2: 90,
+  },
+};
+
 const CHARACTER_CONFIGS = [
   {
     type: "homing",
@@ -55,12 +122,6 @@ const CHARACTER_CONFIGS = [
     name: "파워 타입",
     imageText: "▲",
     description: "보조 유닛의 탄이 기본탄과 동일한 성능으로 발사됩니다.",
-  },
-  {
-    type: "speed",
-    name: "기동 타입",
-    imageText: "◇",
-    description: "보조 유닛이 이동 방향과 반대로 움직이고, 고속 이동 시 피격 범위가 줄어듭니다.",
   },
 ];
 

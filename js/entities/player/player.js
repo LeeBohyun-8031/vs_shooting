@@ -6,6 +6,11 @@ function createInitialPlayer() {
     height: PLAYER_CONFIG.height,
     speed: PLAYER_CONFIG.speed,
     type: selectedCharacterType,
+
+    attackPower: 1,
+    powerItemCount: 0,
+    shotLevel: 1,
+
     invincibleTime: 0,
   };
 }
@@ -39,34 +44,6 @@ function updatePlayer() {
   if (player.invincibleTime > 0) {
     player.invincibleTime -= 1;
   }
-}
-
-function shootBullet() {
-  if (!player) return;
-
-  const now = Date.now();
-
-  if (now - lastShotTime < SHOT_COOLDOWN) return;
-
-  bullets.push({
-    x: player.x + player.width / 2 - BULLET_CONFIG.width / 2,
-    y: player.y - 12,
-    width: BULLET_CONFIG.width,
-    height: BULLET_CONFIG.height,
-    speed: BULLET_CONFIG.speed,
-  });
-
-  playSfx("shoot");
-
-  lastShotTime = now;
-}
-
-function updateBullets() {
-  bullets = bullets.filter((bullet) => {
-    bullet.y -= bullet.speed;
-
-    return bullet.y + bullet.height > 0;
-  });
 }
 
 function useBomb() {

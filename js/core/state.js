@@ -26,6 +26,7 @@ let player = null;
 let bullets = [];
 let enemies = [];
 let enemyBullets = [];
+let items = [];
 let particles = [];
 let stars = [];
 
