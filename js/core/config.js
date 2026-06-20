@@ -116,8 +116,16 @@ const STAGE_CONFIGS = [
     name: "Stage 1",
     normalDuration: 150000,
     bossIntroDuration: 4000,
-    bossHp: 300,
-    bossPattern: "basic",
+    clearDuration: 3000,
+    bossId: "stage1Boss",
+  },
+  {
+    stage: 2,
+    name: "Stage 2",
+    normalDuration: 150000,
+    bossIntroDuration: 4000,
+    clearDuration: 3000,
+    bossId: "stage2Boss",
   },
 ];
 

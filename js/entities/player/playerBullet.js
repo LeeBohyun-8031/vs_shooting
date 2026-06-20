@@ -82,7 +82,7 @@ function updateStraightPlayerBullet(bullet) {
 }
 
 function updateHomingBullet(bullet) {
-  const target = findClosestEnemyToBullet(bullet);
+  const target = findClosestHomingTargetToBullet(bullet);
 
   if (target) {
     steerBulletToTarget(bullet, target);
@@ -92,31 +92,71 @@ function updateHomingBullet(bullet) {
   bullet.y += bullet.vy;
 }
 
-function findClosestEnemyToBullet(bullet) {
-  if (enemies.length === 0) return null;
-
+function findClosestHomingTargetToBullet(bullet) {
   const bulletCenterX = bullet.x + bullet.width / 2;
   const bulletCenterY = bullet.y + bullet.height / 2;
 
-  let closestEnemy = null;
+  let closestTarget = null;
   let closestDistance = Infinity;
 
   enemies.forEach((enemy) => {
-    const enemyCenterX = enemy.x + enemy.width / 2;
-    const enemyCenterY = enemy.y + enemy.height / 2;
+    if (!isValidEnemyHomingTarget(enemy)) return;
 
-    const distance = Math.hypot(
-      enemyCenterX - bulletCenterX,
-      enemyCenterY - bulletCenterY
+    const distance = getDistanceFromBulletToTarget(
+      bulletCenterX,
+      bulletCenterY,
+      enemy
     );
 
     if (distance < closestDistance) {
       closestDistance = distance;
-      closestEnemy = enemy;
+      closestTarget = enemy;
     }
   });
 
-  return closestEnemy;
+  if (isValidBossHomingTarget(boss)) {
+    const bossDistance = getDistanceFromBulletToTarget(
+      bulletCenterX,
+      bulletCenterY,
+      boss
+    );
+
+    if (bossDistance < closestDistance) {
+      closestTarget = boss;
+    }
+  }
+
+  return closestTarget;
+}
+
+function isValidEnemyHomingTarget(enemy) {
+  if (!enemy) return false;
+
+  if (typeof isEnemyAttackable === "function") {
+    return isEnemyAttackable(enemy);
+  }
+
+  return true;
+}
+
+function isValidBossHomingTarget(bossObject) {
+  if (!bossObject) return false;
+
+  if (typeof isBossAttackable === "function") {
+    return isBossAttackable(bossObject);
+  }
+
+  return stagePhase === "boss";
+}
+
+function getDistanceFromBulletToTarget(bulletCenterX, bulletCenterY, target) {
+  const targetCenterX = target.x + target.width / 2;
+  const targetCenterY = target.y + target.height / 2;
+
+  return Math.hypot(
+    targetCenterX - bulletCenterX,
+    targetCenterY - bulletCenterY
+  );
 }
 
 function steerBulletToTarget(bullet, target) {

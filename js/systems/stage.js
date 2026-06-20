@@ -3,6 +3,7 @@ function resetStageState() {
   stagePhase = "normal";
   stageStartTime = 0;
   bossIntroStartTime = 0;
+  stageClearStartTime = 0;
   boss = null;
 }
 
@@ -21,6 +22,10 @@ function startNormalPhase() {
   stagePhase = "normal";
   stageStartTime = performance.now();
   bossIntroStartTime = 0;
+  stageClearStartTime = 0;
+  boss = null;
+
+  clearStageTransitionActors();
 
   lastEnemySpawnTime = performance.now();
 }
@@ -35,6 +40,11 @@ function updateStage(timestamp) {
 
   if (stagePhase === "bossIntro") {
     updateBossIntroPhase(timestamp);
+    return;
+  }
+
+  if (stagePhase === "clear") {
+    updateStageClearPhase(timestamp);
   }
 }
 
@@ -53,6 +63,7 @@ function isNormalPhaseTimeOver(timestamp) {
 function startBossIntro(timestamp) {
   stagePhase = "bossIntro";
   bossIntroStartTime = timestamp;
+  stageClearStartTime = 0;
 
   clearNormalStageActors();
 }
@@ -64,7 +75,98 @@ function updateBossIntroPhase(timestamp) {
     return;
   }
 
+  startBossPhase();
+}
+
+function startBossPhase() {
   stagePhase = "boss";
+  bossIntroStartTime = 0;
+  stageClearStartTime = 0;
+
+  if (typeof spawnCurrentStageBoss === "function") {
+    spawnCurrentStageBoss();
+  }
+}
+
+function startStageClear(timestamp) {
+  clearStageTransitionActors();
+
+  if (!hasNextStage()) {
+    finishFinalStageWithRanking();
+    return;
+  }
+
+  stagePhase = "clear";
+  stageClearStartTime = timestamp;
+  bossIntroStartTime = 0;
+
+  if (typeof resetInputState === "function") {
+    resetInputState();
+  }
+}
+
+function updateStageClearPhase(timestamp) {
+  // 자동 진행하지 않는다.
+  // 다음 스테이지가 있는 경우에만 Z / X 입력으로 선택한다.
+}
+
+function hasNextStage() {
+  return currentStageIndex + 1 < STAGE_CONFIGS.length;
+}
+
+function getNextStageConfig() {
+  if (!hasNextStage()) return null;
+
+  return STAGE_CONFIGS[currentStageIndex + 1];
+}
+
+function isStageClearInputReady() {
+  if (stagePhase !== "clear") return false;
+  if (stageClearStartTime <= 0) return false;
+
+  return performance.now() - stageClearStartTime >= 500;
+}
+
+function goToNextStageFromClear() {
+  if (gameState !== "playing") return;
+  if (stagePhase !== "clear") return;
+  if (!isStageClearInputReady()) return;
+
+  if (!hasNextStage()) {
+    finishFinalStageWithRanking();
+    return;
+  }
+
+  if (typeof resetInputState === "function") {
+    resetInputState();
+  }
+
+  clearStageTransitionActors();
+  startStage(currentStageIndex + 1);
+}
+
+function finishGameFromStageClear() {
+  if (gameState !== "playing") return;
+  if (stagePhase !== "clear") return;
+  if (!isStageClearInputReady()) return;
+
+  clearStageTransitionActors();
+
+  if (typeof resetInputState === "function") {
+    resetInputState();
+  }
+
+  endGame();
+}
+
+function finishFinalStageWithRanking() {
+  clearStageTransitionActors();
+
+  if (typeof resetInputState === "function") {
+    resetInputState();
+  }
+
+  endGame(true);
 }
 
 function clearNormalStageActors() {
@@ -82,6 +184,14 @@ function clearNormalStageActors() {
 
   enemies = [];
   enemyBullets = [];
+}
+
+function clearStageTransitionActors() {
+  enemies = [];
+  enemyBullets = [];
+  bullets = [];
+  items = [];
+  boss = null;
 }
 
 function isEnemySpawnAllowed() {
@@ -109,5 +219,9 @@ function applyStagePauseDuration(pauseDuration) {
 
   if (bossIntroStartTime > 0) {
     bossIntroStartTime += pauseDuration;
+  }
+
+  if (stageClearStartTime > 0) {
+    stageClearStartTime += pauseDuration;
   }
 }

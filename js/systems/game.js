@@ -155,7 +155,7 @@ function hidePauseScreen() {
   pauseScreen.classList.remove("active");
 }
 
-function endGame() {
+function endGame(forceNickname = false) {
   gameState = "gameOver";
   cancelAnimationFrame(animationId);
 
@@ -164,7 +164,10 @@ function endGame() {
   finalScoreText.textContent = score;
   rankingButton.classList.remove("hidden");
 
-  if (isRankableScore(score)) {
+  gameOverScreen.classList.remove("active");
+  nicknameScreen.classList.remove("active");
+
+  if (forceNickname || isRankableScore(score)) {
     nicknameInput.value = "";
     nicknameScreen.classList.add("active");
     nicknameInput.focus();
@@ -205,6 +208,10 @@ function update(timestamp) {
     updateStage(timestamp);
   }
 
+  if (typeof updateBossSystem === "function") {
+    updateBossSystem(timestamp);
+  }
+
   updatePlayer();
   updateBullets();
   updateEnemies(timestamp);
@@ -224,7 +231,17 @@ function update(timestamp) {
   updateParticles();
 
   checkBulletEnemyCollision();
+
+  if (typeof checkBulletBossCollision === "function") {
+    checkBulletBossCollision();
+  }
+
   checkPlayerEnemyCollision();
+
+  if (typeof checkPlayerBossCollision === "function") {
+    checkPlayerBossCollision();
+  }
+
   checkPlayerEnemyBulletCollision();
 
   updateGameInfo();

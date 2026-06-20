@@ -9,6 +9,22 @@ const SHOT_ORDER_PATTERNS = {
   OUTSIDE_IN: "outsideIn",
 };
 
+function getCurrentStageNumberForWave() {
+  if (typeof getCurrentStageConfig === "function") {
+    const stageConfig = getCurrentStageConfig();
+
+    if (stageConfig && Number.isFinite(stageConfig.stage)) {
+      return stageConfig.stage;
+    }
+  }
+
+  if (Number.isFinite(currentStageIndex)) {
+    return currentStageIndex + 1;
+  }
+
+  return 1;
+}
+
 function pickShotOrderPattern(patterns) {
   return patterns[randomInt(0, patterns.length - 1)];
 }
@@ -53,6 +69,16 @@ function getPatternedShotDelay(index, count, baseDelay, gapDelay, pattern) {
 }
 
 function getEnemyWaveTypesByDifficulty() {
+  const stageNumber = getCurrentStageNumberForWave();
+
+  if (stageNumber >= 2) {
+    return getStageTwoEnemyWaveTypesByDifficulty();
+  }
+
+  return getStageOneEnemyWaveTypesByDifficulty();
+}
+
+function getStageOneEnemyWaveTypesByDifficulty() {
   if (selectedDifficultyType === "easy") {
     return [
       { type: "centerLine", weight: 20 },
@@ -95,6 +121,61 @@ function getEnemyWaveTypesByDifficulty() {
     { type: "rightHorizontal", weight: 9 },
     { type: "sideCross", weight: 7 },
     { type: "topStopSideExit", weight: 6 },
+  ];
+}
+
+function getStageTwoEnemyWaveTypesByDifficulty() {
+  if (selectedDifficultyType === "easy") {
+    return [
+      { type: "centerLine", weight: 12 },
+      { type: "leftSweep", weight: 8 },
+      { type: "rightSweep", weight: 8 },
+      { type: "sineColumn", weight: 8 },
+      { type: "centerStop", weight: 9 },
+      { type: "sidePairs", weight: 10 },
+      { type: "leftHorizontal", weight: 10 },
+      { type: "rightHorizontal", weight: 10 },
+      { type: "sideCross", weight: 9 },
+      { type: "topStopSideExit", weight: 9 },
+      { type: "circleBurst", weight: 5 },
+      { type: "topCirclePair", weight: 5 },
+    ];
+  }
+
+  if (selectedDifficultyType === "hard") {
+    return [
+      { type: "centerLine", weight: 6 },
+      { type: "leftSweep", weight: 7 },
+      { type: "rightSweep", weight: 7 },
+      { type: "sineColumn", weight: 7 },
+      { type: "centerStop", weight: 7 },
+      { type: "vFormation", weight: 8 },
+      { type: "sidePairs", weight: 11 },
+      { type: "leftHorizontal", weight: 10 },
+      { type: "rightHorizontal", weight: 10 },
+      { type: "sideCross", weight: 11 },
+      { type: "topStopSideExit", weight: 11 },
+      { type: "circleBurst", weight: 8 },
+      { type: "topCirclePair", weight: 9 },
+      { type: "topCircleTrio", weight: 8 },
+    ];
+  }
+
+  return [
+    { type: "centerLine", weight: 8 },
+    { type: "leftSweep", weight: 8 },
+    { type: "rightSweep", weight: 8 },
+    { type: "sineColumn", weight: 8 },
+    { type: "centerStop", weight: 8 },
+    { type: "vFormation", weight: 8 },
+    { type: "sidePairs", weight: 10 },
+    { type: "leftHorizontal", weight: 10 },
+    { type: "rightHorizontal", weight: 10 },
+    { type: "sideCross", weight: 10 },
+    { type: "topStopSideExit", weight: 10 },
+    { type: "circleBurst", weight: 7 },
+    { type: "topCirclePair", weight: 7 },
+    { type: "topCircleTrio", weight: 5 },
   ];
 }
 
@@ -226,11 +307,21 @@ function spawnEnemyWave() {
   }
 
   if (waveType === "circleBurst") {
-    spawnCircleBurstWave();
-    return;
-  }
+  spawnCircleBurstWave();
+  return;
+}
 
-  spawnCenterLineWave();
+if (waveType === "topCirclePair") {
+  spawnTopCirclePairWave();
+  return;
+}
+
+if (waveType === "topCircleTrio") {
+  spawnTopCircleTrioWave();
+  return;
+}
+
+spawnCenterLineWave();
 }
 
 function spawnCenterLineWave() {

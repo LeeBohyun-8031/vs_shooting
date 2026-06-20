@@ -34,6 +34,7 @@ let currentStageIndex = 0;
 let stagePhase = "normal";
 let stageStartTime = 0;
 let bossIntroStartTime = 0;
+let stageClearStartTime = 0;
 let boss = null;
 
 let pausedStartTime = 0;

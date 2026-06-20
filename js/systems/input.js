@@ -97,6 +97,40 @@ function handlePauseKeyDown(event) {
   return false;
 }
 
+function handleStageClearKeyDown(event) {
+  if (gameState !== "playing") return false;
+  if (stagePhase !== "clear") return false;
+
+  if (event.code === "KeyZ") {
+    event.preventDefault();
+    playInputSfx("confirm");
+
+    if (typeof goToNextStageFromClear === "function") {
+      goToNextStageFromClear();
+    }
+
+    return true;
+  }
+
+  if (event.code === "KeyX") {
+    event.preventDefault();
+    playInputSfx("select");
+
+    if (typeof finishGameFromStageClear === "function") {
+      finishGameFromStageClear();
+    }
+
+    return true;
+  }
+
+  if (event.code in keys || event.code === "Enter") {
+    event.preventDefault();
+    return true;
+  }
+
+  return false;
+}
+
 function handleStartOrRestartKeyDown(event) {
   if (event.code !== "Enter" && event.code !== "KeyZ") {
     return false;
@@ -127,6 +161,10 @@ function handleKeyDown(event) {
   safeUnlockSound();
 
   if (handlePauseKeyDown(event)) {
+    return;
+  }
+
+  if (handleStageClearKeyDown(event)) {
     return;
   }
 
