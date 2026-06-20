@@ -1,3 +1,8 @@
+const GAME_CLEAR_OVERLAY_DURATION = 2600;
+
+let stageClearBonusAwarded = false;
+let lastStageClearBonus = null;
+
 function resetStageState() {
   currentStageIndex = 0;
   stagePhase = "normal";
@@ -5,6 +10,9 @@ function resetStageState() {
   bossIntroStartTime = 0;
   stageClearStartTime = 0;
   boss = null;
+
+  stageClearBonusAwarded = false;
+  lastStageClearBonus = null;
 }
 
 function getCurrentStageConfig() {
@@ -24,6 +32,9 @@ function startNormalPhase() {
   bossIntroStartTime = 0;
   stageClearStartTime = 0;
   boss = null;
+
+  stageClearBonusAwarded = false;
+  lastStageClearBonus = null;
 
   clearStageTransitionActors();
 
@@ -45,6 +56,11 @@ function updateStage(timestamp) {
 
   if (stagePhase === "clear") {
     updateStageClearPhase(timestamp);
+    return;
+  }
+
+  if (stagePhase === "gameClear") {
+    updateGameClearPhase(timestamp);
   }
 }
 
@@ -89,10 +105,12 @@ function startBossPhase() {
 }
 
 function startStageClear(timestamp) {
+  applyStageClearBonus();
+
   clearStageTransitionActors();
 
   if (!hasNextStage()) {
-    finishFinalStageWithRanking();
+    startGameClearPhase(timestamp);
     return;
   }
 
@@ -108,6 +126,97 @@ function startStageClear(timestamp) {
 function updateStageClearPhase(timestamp) {
   // 자동 진행하지 않는다.
   // 다음 스테이지가 있는 경우에만 Z / X 입력으로 선택한다.
+}
+
+function startGameClearPhase(timestamp) {
+  stagePhase = "gameClear";
+  stageClearStartTime = timestamp;
+  bossIntroStartTime = 0;
+
+  clearStageTransitionActors();
+
+  if (typeof resetInputState === "function") {
+    resetInputState();
+  }
+}
+
+function updateGameClearPhase(timestamp) {
+  if (stageClearStartTime <= 0) return;
+
+  if (timestamp - stageClearStartTime < GAME_CLEAR_OVERLAY_DURATION) {
+    return;
+  }
+
+  finishFinalStageWithRanking();
+}
+
+function applyStageClearBonus() {
+  if (stageClearBonusAwarded) return;
+
+  const bonus = calculateStageClearBonus();
+
+  score += bonus.total;
+  stageClearBonusAwarded = true;
+  lastStageClearBonus = bonus;
+
+  if (typeof updateGameInfo === "function") {
+    updateGameInfo();
+  }
+}
+
+function calculateStageClearBonus() {
+  const stageConfig = getCurrentStageConfig();
+  const bonusConfig = getStageClearBonusConfig();
+
+  const stageNumber = stageConfig.stage || currentStageIndex + 1;
+  const baseScore = stageNumber * bonusConfig.baseScorePerStage;
+  const lifeScore = life * bonusConfig.lifeBonus;
+  const bombScore = bomb * bonusConfig.bombBonus;
+  const difficultyMultiplier = getStageClearDifficultyMultiplier(bonusConfig);
+
+  const rawTotal = baseScore + lifeScore + bombScore;
+  const total = Math.round(rawTotal * difficultyMultiplier);
+
+  return {
+    stage: stageNumber,
+    baseScore,
+    lifeScore,
+    bombScore,
+    difficultyMultiplier,
+    total,
+  };
+}
+
+function getStageClearBonusConfig() {
+  if (typeof STAGE_CLEAR_BONUS_CONFIG === "object") {
+    return STAGE_CLEAR_BONUS_CONFIG;
+  }
+
+  return {
+    baseScorePerStage: 3000,
+    lifeBonus: 1000,
+    bombBonus: 500,
+    difficultyMultiplier: {
+      easy: 0.8,
+      normal: 1,
+      hard: 1.4,
+    },
+  };
+}
+
+function getStageClearDifficultyMultiplier(bonusConfig) {
+  const multiplierMap = bonusConfig.difficultyMultiplier || {};
+  const multiplier = multiplierMap[selectedDifficultyType];
+
+  if (!Number.isFinite(multiplier)) {
+    return 1;
+  }
+
+  return multiplier;
+}
+
+function getLastStageClearBonus() {
+  return lastStageClearBonus;
 }
 
 function hasNextStage() {
@@ -133,7 +242,7 @@ function goToNextStageFromClear() {
   if (!isStageClearInputReady()) return;
 
   if (!hasNextStage()) {
-    finishFinalStageWithRanking();
+    startGameClearPhase(performance.now());
     return;
   }
 

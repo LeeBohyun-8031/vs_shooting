@@ -110,6 +110,17 @@ const POWER_UP_REQUIREMENTS = {
   },
 };
 
+const STAGE_CLEAR_BONUS_CONFIG = {
+  baseScorePerStage: 3000,
+  lifeBonus: 1000,
+  bombBonus: 500,
+  difficultyMultiplier: {
+    easy: 0.8,
+    normal: 1,
+    hard: 1.4,
+  },
+};
+
 const STAGE_CONFIGS = [
   {
     stage: 1,
