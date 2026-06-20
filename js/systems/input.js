@@ -141,8 +141,30 @@ function bindMobileCanvasControls() {
     safeUnlockSound();
 
     if (stagePhase === "clear") {
+      const rect = canvas.getBoundingClientRect();
+      const canvasX = (event.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+      const canvasY = (event.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+      const action =
+        typeof getStageClearTouchActionAt === "function"
+          ? getStageClearTouchActionAt(canvasX, canvasY)
+          : null;
+
+      if (action === "next") {
+        playInputSfx("confirm");
+        if (typeof goToNextStageFromClear === "function") goToNextStageFromClear();
+      }
+
+      if (action === "exit") {
+        playInputSfx("select");
+        if (typeof finishGameFromStageClear === "function") finishGameFromStageClear();
+      }
+
+      return;
+    }
+
+    if (stagePhase === "gameClear") {
       playInputSfx("confirm");
-      if (typeof goToNextStageFromClear === "function") goToNextStageFromClear();
+      if (typeof finishGameClearFromTouch === "function") finishGameClearFromTouch();
       return;
     }
 

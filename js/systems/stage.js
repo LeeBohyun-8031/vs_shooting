@@ -150,6 +150,15 @@ function updateGameClearPhase(timestamp) {
   finishFinalStageWithRanking();
 }
 
+function finishGameClearFromTouch() {
+  if (gameState !== "playing") return;
+  if (stagePhase !== "gameClear") return;
+  if (stageClearStartTime <= 0) return;
+  if (performance.now() - stageClearStartTime < 500) return;
+
+  finishFinalStageWithRanking();
+}
+
 function applyStageClearBonus() {
   if (stageClearBonusAwarded) return;
 

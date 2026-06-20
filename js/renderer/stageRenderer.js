@@ -258,15 +258,102 @@ function drawStageClearPanel(
     markerHeight: 12,
   });
 
-  ctx.font = "bold 16px Arial";
+  const isMobileLayout =
+    typeof isMobileControlMode === "function" && isMobileControlMode();
 
-  ctx.fillStyle = "#2563eb";
-  ctx.fillText(`Z : ${nextStageConfig.name} 이동`, centerX, panelY + 150);
+  if (isMobileLayout) {
+    const touchButtons = getStageClearTouchButtonBounds();
 
-  ctx.fillStyle = "#dc2626";
-  ctx.fillText("X : 게임 종료", centerX, panelY + 178);
+    drawStageClearTouchButton(
+      `${nextStageConfig.name} 이동`,
+      touchButtons.next,
+      "#2563eb",
+      "rgba(96, 165, 250, 0.2)"
+    );
+    drawStageClearTouchButton(
+      "게임 종료",
+      touchButtons.exit,
+      "#dc2626",
+      "rgba(244, 114, 182, 0.18)"
+    );
+  } else {
+    ctx.font = "bold 16px Arial";
+
+    ctx.fillStyle = "#2563eb";
+    ctx.fillText(`Z : ${nextStageConfig.name} 이동`, centerX, panelY + 150);
+
+    ctx.fillStyle = "#dc2626";
+    ctx.fillText("X : 게임 종료", centerX, panelY + 178);
+  }
 
   ctx.restore();
+}
+
+function getStageClearTouchButtonBounds() {
+  const centerX = CANVAS_WIDTH / 2;
+  const centerY = CANVAS_HEIGHT / 2 - 20;
+  const panelY = centerY - 96;
+
+  return {
+    next: {
+      x: centerX - 125,
+      y: panelY + 135,
+      width: 250,
+      height: 29,
+    },
+    exit: {
+      x: centerX - 125,
+      y: panelY + 168,
+      width: 250,
+      height: 27,
+    },
+  };
+}
+
+function drawStageClearTouchButton(text, bounds, textColor, markerColor) {
+  ctx.save();
+
+  ctx.fillStyle = "rgba(17, 24, 39, 0.16)";
+  ctx.fillRect(bounds.x + 3, bounds.y + 3, bounds.width, bounds.height);
+
+  ctx.fillStyle = "rgba(255, 250, 240, 0.94)";
+  ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+  ctx.fillStyle = markerColor;
+  ctx.fillRect(bounds.x + 28, bounds.y + 14, bounds.width - 56, 8);
+
+  ctx.save();
+  ctx.setLineDash([5, 3]);
+  ctx.strokeStyle = "rgba(17, 24, 39, 0.72)";
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+  ctx.restore();
+
+  ctx.fillStyle = textColor;
+  ctx.font = "900 15px 'Comic Sans MS', 'Segoe Print', Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+
+  ctx.restore();
+}
+
+function getStageClearTouchActionAt(x, y) {
+  const buttons = getStageClearTouchButtonBounds();
+
+  if (isPointInsideStageClearButton(x, y, buttons.next)) return "next";
+  if (isPointInsideStageClearButton(x, y, buttons.exit)) return "exit";
+
+  return null;
+}
+
+function isPointInsideStageClearButton(x, y, bounds) {
+  return (
+    x >= bounds.x &&
+    x <= bounds.x + bounds.width &&
+    y >= bounds.y &&
+    y <= bounds.y + bounds.height
+  );
 }
 
 function drawGameClearOverlay() {
@@ -338,7 +425,14 @@ function drawGameClearPanel(centerX, centerY, pulse, progress, bonus) {
 
   ctx.fillStyle = "rgba(17, 24, 39, 0.72)";
   ctx.font = "bold 13px Arial";
-  ctx.fillText("랭킹 등록 화면으로 이동 중...", centerX, panelY + 184);
+
+  const isMobileLayout =
+    typeof isMobileControlMode === "function" && isMobileControlMode();
+  const guideText = isMobileLayout
+    ? "화면을 터치해 계속"
+    : "랭킹 등록 화면으로 이동 중...";
+
+  ctx.fillText(guideText, centerX, panelY + 184);
 
   ctx.restore();
 }
