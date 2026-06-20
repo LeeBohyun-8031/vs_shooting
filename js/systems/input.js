@@ -248,9 +248,65 @@ function bindMobileControls() {
     });
   });
 
+  const pauseForMobileInterruption = () => {
+    resetInputState();
+
+    if (!isMobileControlMode()) return;
+
+    if (gameState === "playing") {
+      pauseGame();
+    }
+  };
+
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) resetInputState();
+    if (document.hidden) pauseForMobileInterruption();
   });
+
+  window.addEventListener("pagehide", pauseForMobileInterruption);
+
+  window.addEventListener("orientationchange", () => {
+    resetMobileCanvasGesture();
+
+    window.setTimeout(() => {
+      if (isMobileControlMode() && window.innerWidth > window.innerHeight) {
+        pauseForMobileInterruption();
+      }
+    }, 120);
+  });
+}
+
+function bindMobileKeyboardLayout() {
+  const updateViewportHeight = () => {
+    const viewportHeight = window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+    document.documentElement.style.setProperty(
+      "--mobile-viewport-height",
+      `${Math.round(viewportHeight)}px`
+    );
+  };
+
+  const openKeyboardLayout = () => {
+    if (!isMobileControlMode()) return;
+    document.body.classList.add("mobile-keyboard-open");
+    updateViewportHeight();
+  };
+
+  const closeKeyboardLayout = () => {
+    document.body.classList.remove("mobile-keyboard-open");
+    updateViewportHeight();
+  };
+
+  nicknameInput.addEventListener("focus", openKeyboardLayout);
+  nicknameInput.addEventListener("blur", closeKeyboardLayout);
+  window.addEventListener("resize", updateViewportHeight);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateViewportHeight);
+  }
+
+  updateViewportHeight();
 }
 
 function handleCharacterSelectKeyDown(event) {
@@ -461,6 +517,7 @@ function bindEvents() {
   window.addEventListener("keyup", handleKeyUp);
   bindMobileControls();
   bindMobileCanvasControls();
+  bindMobileKeyboardLayout();
   bindSelectionControls();
 
   startButton.addEventListener("click", () => {
