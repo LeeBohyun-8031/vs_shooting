@@ -95,6 +95,7 @@ function bindSelectionControls() {
 }
 
 let activeCanvasPointerId = null;
+let bombTouchPointerId = null;
 let canvasTouchLastX = 0;
 let canvasTouchLastY = 0;
 let twoFingerBombTriggered = false;
@@ -102,14 +103,22 @@ let twoFingerBombTriggered = false;
 function resetMobileCanvasGesture() {
   keys.KeyZ = false;
   activeCanvasPointerId = null;
+  bombTouchPointerId = null;
   twoFingerBombTriggered = false;
 }
 
 function releaseMobileCanvasTouch(event) {
+  if (event.pointerId === bombTouchPointerId) {
+    bombTouchPointerId = null;
+    twoFingerBombTriggered = false;
+    return;
+  }
+
   if (event.pointerId !== activeCanvasPointerId) return;
 
   keys.KeyZ = false;
   activeCanvasPointerId = null;
+  bombTouchPointerId = null;
   twoFingerBombTriggered = false;
 }
 
@@ -152,6 +161,8 @@ function bindMobileCanvasControls() {
       if (!twoFingerBombTriggered) {
         useBomb();
         twoFingerBombTriggered = true;
+        bombTouchPointerId = event.pointerId;
+        canvas.setPointerCapture(event.pointerId);
       }
 
       return;
