@@ -4,6 +4,10 @@ function resetInputState() {
   });
 
   bombPressed = false;
+
+  if (typeof resetMobileCanvasGesture === "function") {
+    resetMobileCanvasGesture();
+  }
 }
 
 function safeUnlockSound() {
@@ -90,80 +94,116 @@ function bindSelectionControls() {
   window.addEventListener("resize", updateSelectionTabOrder);
 }
 
-function handleMobileDirectionPress(code) {
-  safeUnlockSound();
+const MOBILE_DOUBLE_TAP_DELAY = 320;
+const MOBILE_DOUBLE_TAP_DISTANCE = 48;
+const MOBILE_TAP_MOVE_LIMIT = 16;
 
-  if (gameState === "characterSelect") {
-    if (code === "ArrowLeft") moveCharacterSelect(-1);
-    if (code === "ArrowRight") moveCharacterSelect(1);
-    return;
-  }
+let activeCanvasPointerId = null;
+let canvasTouchStartTime = 0;
+let canvasTouchStartX = 0;
+let canvasTouchStartY = 0;
+let canvasTouchLastX = 0;
+let canvasTouchLastY = 0;
+let canvasTouchTravel = 0;
+let canvasDoubleTapTriggered = false;
+let lastCanvasTapTime = 0;
+let lastCanvasTapX = 0;
+let lastCanvasTapY = 0;
 
-  if (gameState === "difficultySelect") {
-    if (code === "ArrowLeft") moveDifficultySelect(-1);
-    if (code === "ArrowRight") moveDifficultySelect(1);
-    return;
-  }
-
-  if (gameState === "playing" && code in keys) keys[code] = true;
+function resetMobileCanvasGesture() {
+  keys.KeyZ = false;
+  activeCanvasPointerId = null;
+  canvasDoubleTapTriggered = false;
+  lastCanvasTapTime = 0;
 }
 
-function handleMobileFirePress() {
-  safeUnlockSound();
+function releaseMobileCanvasTouch(event) {
+  if (event.pointerId !== activeCanvasPointerId) return;
 
-  if (gameState === "characterSelect") {
-    confirmCharacterSelect();
-    return;
+  const touchDuration = performance.now() - canvasTouchStartTime;
+  const isShortTap = canvasTouchTravel <= MOBILE_TAP_MOVE_LIMIT && touchDuration <= MOBILE_DOUBLE_TAP_DELAY;
+
+  if (isShortTap && !canvasDoubleTapTriggered) {
+    lastCanvasTapTime = performance.now();
+    lastCanvasTapX = canvasTouchStartX;
+    lastCanvasTapY = canvasTouchStartY;
   }
 
-  if (gameState === "difficultySelect") {
-    confirmDifficultySelect();
-    return;
-  }
-
-  if (gameState === "playing" && stagePhase === "clear") {
-    playInputSfx("confirm");
-    if (typeof goToNextStageFromClear === "function") goToNextStageFromClear();
-    return;
-  }
-
-  if (gameState === "playing") keys.KeyZ = true;
+  keys.KeyZ = false;
+  activeCanvasPointerId = null;
 }
 
-function handleMobileBombPress() {
-  safeUnlockSound();
+function bindMobileCanvasControls() {
+  canvas.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch" || gameState !== "playing") return;
 
-  if (gameState === "characterSelect" && characterSelectMode === "detail") {
-    backToCharacterSelect();
-    return;
-  }
+    event.preventDefault();
+    safeUnlockSound();
 
-  if (gameState === "difficultySelect") {
-    playInputSfx("select");
-    openCharacterSelect();
-    return;
-  }
+    if (stagePhase === "clear") {
+      playInputSfx("confirm");
+      if (typeof goToNextStageFromClear === "function") goToNextStageFromClear();
+      return;
+    }
 
-  if (gameState === "playing" && stagePhase === "clear") {
-    playInputSfx("select");
-    if (typeof finishGameFromStageClear === "function") finishGameFromStageClear();
-    return;
-  }
+    if (activeCanvasPointerId !== null) return;
 
-  if (gameState === "playing" && !bombPressed) {
-    useBomb();
-    bombPressed = true;
-  }
-}
+    const now = performance.now();
+    const distanceFromLastTap = Math.hypot(
+      event.clientX - lastCanvasTapX,
+      event.clientY - lastCanvasTapY
+    );
 
-function releaseMobileControl(button) {
-  const code = button.dataset.key;
-  const action = button.dataset.action;
+    canvasDoubleTapTriggered =
+      now - lastCanvasTapTime <= MOBILE_DOUBLE_TAP_DELAY &&
+      distanceFromLastTap <= MOBILE_DOUBLE_TAP_DISTANCE;
 
-  if (code && code in keys) keys[code] = false;
-  if (action === "fire") keys.KeyZ = false;
-  if (action === "bomb") bombPressed = false;
-  button.classList.remove("pressed");
+    if (canvasDoubleTapTriggered) {
+      useBomb();
+      lastCanvasTapTime = 0;
+    }
+
+    activeCanvasPointerId = event.pointerId;
+    canvasTouchStartTime = now;
+    canvasTouchStartX = event.clientX;
+    canvasTouchStartY = event.clientY;
+    canvasTouchLastX = event.clientX;
+    canvasTouchLastY = event.clientY;
+    canvasTouchTravel = 0;
+
+    canvas.setPointerCapture(event.pointerId);
+    keys.KeyZ = true;
+    shootBullet();
+  });
+
+  canvas.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== activeCanvasPointerId || !player || gameState !== "playing") return;
+
+    event.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+    const deltaX = event.clientX - canvasTouchLastX;
+    const deltaY = event.clientY - canvasTouchLastY;
+
+    canvasTouchTravel += Math.hypot(deltaX, deltaY);
+    canvasTouchLastX = event.clientX;
+    canvasTouchLastY = event.clientY;
+
+    player.x = clamp(
+      player.x + deltaX * (CANVAS_WIDTH / rect.width),
+      0,
+      CANVAS_WIDTH - player.width
+    );
+    player.y = clamp(
+      player.y + deltaY * (CANVAS_HEIGHT / rect.height),
+      0,
+      CANVAS_HEIGHT - player.height
+    );
+  });
+
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
+    canvas.addEventListener(eventName, releaseMobileCanvasTouch);
+  });
 }
 
 function bindMobileControls() {
@@ -176,17 +216,13 @@ function bindMobileControls() {
       button.setPointerCapture(event.pointerId);
       button.classList.add("pressed");
 
-      const code = button.dataset.key;
       const action = button.dataset.action;
 
-      if (code) handleMobileDirectionPress(code);
-      if (action === "fire") handleMobileFirePress();
-      if (action === "bomb") handleMobileBombPress();
       if (action === "pause") pauseGame();
     });
 
     ["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
-      button.addEventListener(eventName, () => releaseMobileControl(button));
+      button.addEventListener(eventName, () => button.classList.remove("pressed"));
     });
   });
 
@@ -402,6 +438,7 @@ function bindEvents() {
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("keyup", handleKeyUp);
   bindMobileControls();
+  bindMobileCanvasControls();
   bindSelectionControls();
 
   startButton.addEventListener("click", () => {
