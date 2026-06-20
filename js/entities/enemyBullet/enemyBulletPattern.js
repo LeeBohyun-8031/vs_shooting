@@ -216,3 +216,144 @@ function getRandomAimedRainBulletCount() {
 
   return 4;
 }
+
+function shootSplitFanEnemyBullet(enemy, options = {}) {
+  const radius = options.radius ?? 8;
+  const parentSpeed = options.parentSpeed ?? 1.05;
+  const parentAngle = options.parentAngle ?? Math.PI / 2;
+
+  const spawnPoint = getOffsetEnemyBulletSpawnPoint(
+    enemy,
+    radius,
+    options.offsetX ?? 0,
+    options.offsetY ?? 0
+  );
+
+  createEnemyBullet({
+    x: spawnPoint.x,
+    y: spawnPoint.y,
+    vx: Math.cos(parentAngle) * parentSpeed,
+    vy: Math.sin(parentAngle) * parentSpeed,
+    radius,
+    hitboxSize: options.hitboxSize ?? 8,
+    color: options.color || "#fb923c",
+    glowColor: options.glowColor || "#fed7aa",
+    split: {
+      delay: options.splitDelay ?? 46,
+      count: options.splitCount ?? getSplitFanBulletCount(),
+      speed: options.splitSpeed ?? 1.85,
+      radius: options.splitRadius ?? 4,
+      hitboxSize: options.splitHitboxSize ?? ENEMY_BULLET_CONFIG.hitboxSize,
+      pattern: "fanDown",
+      spreadRange: options.spreadRange ?? Math.PI * 0.82,
+      baseAngle: options.baseAngle ?? Math.PI / 2,
+      color: options.splitColor || "#fb7185",
+      glowColor: options.splitGlowColor || "#fda4af",
+      removeParent: true,
+    },
+  });
+}
+
+function shootSplitCircleEnemyBullet(enemy, options = {}) {
+  const radius = options.radius ?? 8;
+  const parentSpeed = options.parentSpeed ?? 0.9;
+  const parentAngle = options.parentAngle ?? Math.PI / 2;
+
+  const spawnPoint = getOffsetEnemyBulletSpawnPoint(
+    enemy,
+    radius,
+    options.offsetX ?? 0,
+    options.offsetY ?? 0
+  );
+
+  createEnemyBullet({
+    x: spawnPoint.x,
+    y: spawnPoint.y,
+    vx: Math.cos(parentAngle) * parentSpeed,
+    vy: Math.sin(parentAngle) * parentSpeed,
+    radius,
+    hitboxSize: options.hitboxSize ?? 8,
+    color: options.color || "#a78bfa",
+    glowColor: options.glowColor || "#ddd6fe",
+    split: {
+      delay: options.splitDelay ?? 52,
+      count: options.splitCount ?? getSplitCircleBulletCount(),
+      speed: options.splitSpeed ?? 1.7,
+      radius: options.splitRadius ?? 4,
+      hitboxSize: options.splitHitboxSize ?? ENEMY_BULLET_CONFIG.hitboxSize,
+      pattern: "circle",
+      spreadRange: Math.PI * 2,
+      baseAngle: 0,
+      color: options.splitColor || "#c084fc",
+      glowColor: options.splitGlowColor || "#ddd6fe",
+      removeParent: true,
+    },
+  });
+}
+
+function shootSplitAimedFanEnemyBullet(enemy, options = {}) {
+  const radius = options.radius ?? 8;
+  const parentSpeed = options.parentSpeed ?? 1.0;
+  const parentAngle = options.parentAngle ?? Math.PI / 2;
+
+  const spawnPoint = getOffsetEnemyBulletSpawnPoint(
+    enemy,
+    radius,
+    options.offsetX ?? 0,
+    options.offsetY ?? 0
+  );
+
+  createEnemyBullet({
+    x: spawnPoint.x,
+    y: spawnPoint.y,
+    vx: Math.cos(parentAngle) * parentSpeed,
+    vy: Math.sin(parentAngle) * parentSpeed,
+    radius,
+    hitboxSize: options.hitboxSize ?? 8,
+    color: options.color || "#f43f5e",
+    glowColor: options.glowColor || "#fda4af",
+    split: {
+      delay: options.splitDelay ?? 44,
+      count: options.splitCount ?? getSplitAimedFanBulletCount(),
+      speed: options.splitSpeed ?? 1.9,
+      radius: options.splitRadius ?? 4,
+      hitboxSize: options.splitHitboxSize ?? ENEMY_BULLET_CONFIG.hitboxSize,
+      pattern: "aimedFan",
+      spreadRange: options.spreadRange ?? Math.PI / 3.8,
+      baseAngle: Math.PI / 2,
+      color: options.splitColor || "#facc15",
+      glowColor: options.splitGlowColor || "#fde68a",
+      removeParent: true,
+    },
+  });
+}
+
+function getOffsetEnemyBulletSpawnPoint(enemy, radius, offsetX, offsetY) {
+  const center = getEnemyCenter(enemy);
+
+  return {
+    x: getSafeBulletSpawnX(center.x + offsetX, radius),
+    y: getSafeBulletSpawnY(center.y + offsetY, radius),
+  };
+}
+
+function getSplitFanBulletCount() {
+  if (selectedDifficultyType === "easy") return 6;
+  if (selectedDifficultyType === "hard") return 10;
+
+  return 8;
+}
+
+function getSplitCircleBulletCount() {
+  if (selectedDifficultyType === "easy") return 8;
+  if (selectedDifficultyType === "hard") return 14;
+
+  return 10;
+}
+
+function getSplitAimedFanBulletCount() {
+  if (selectedDifficultyType === "easy") return 5;
+  if (selectedDifficultyType === "hard") return 9;
+
+  return 7;
+}

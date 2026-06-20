@@ -102,13 +102,124 @@ function fireEnemyShotPattern(enemy) {
 }
 
 function updateEnemyBullets() {
-  enemyBullets = enemyBullets.filter((enemyBullet) => {
+  const nextEnemyBullets = [];
+
+  enemyBullets.forEach((enemyBullet) => {
     enemyBullet.x += enemyBullet.vx;
     enemyBullet.y += enemyBullet.vy;
     enemyBullet.age += 1;
 
-    return !isEnemyBulletOutOfScreen(enemyBullet);
+    if (shouldSplitEnemyBullet(enemyBullet)) {
+      enemyBullet.hasSplit = true;
+      createSplitEnemyBullets(enemyBullet, nextEnemyBullets);
+
+      if (enemyBullet.split.removeParent) {
+        return;
+      }
+    }
+
+    if (!isEnemyBulletOutOfScreen(enemyBullet)) {
+      nextEnemyBullets.push(enemyBullet);
+    }
   });
+
+  enemyBullets = nextEnemyBullets;
+}
+
+function shouldSplitEnemyBullet(enemyBullet) {
+  if (!enemyBullet.split) return false;
+  if (enemyBullet.hasSplit) return false;
+
+  return enemyBullet.age >= enemyBullet.split.delay;
+}
+
+function createSplitEnemyBullets(parentBullet, targetBullets) {
+  const split = parentBullet.split;
+  const angles = getSplitEnemyBulletAngles(parentBullet, split);
+
+  angles.forEach((angle) => {
+    const speed = split.speed;
+
+    targetBullets.push({
+      x: parentBullet.x,
+      y: parentBullet.y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      radius: split.radius,
+      hitboxSize: split.hitboxSize,
+      color: split.color,
+      glowColor: split.glowColor,
+      age: 0,
+
+      split: null,
+      hasSplit: false,
+    });
+  });
+
+  createHitEffect(parentBullet.x, parentBullet.y, 6);
+}
+
+function getSplitEnemyBulletAngles(parentBullet, split) {
+  if (split.pattern === "circle") {
+    return getCircleSplitAngles(split.count);
+  }
+
+  if (split.pattern === "aimedFan") {
+    return getAimedFanSplitAngles(parentBullet, split);
+  }
+
+  return getFanDownSplitAngles(split);
+}
+
+function getCircleSplitAngles(count) {
+  const angles = [];
+
+  for (let i = 0; i < count; i += 1) {
+    angles.push((Math.PI * 2 / count) * i);
+  }
+
+  return angles;
+}
+
+function getFanDownSplitAngles(split) {
+  const angles = [];
+  const count = Math.max(split.count, 1);
+  const startAngle = split.baseAngle - split.spreadRange / 2;
+
+  for (let i = 0; i < count; i += 1) {
+    const ratio = count === 1 ? 0.5 : i / (count - 1);
+    angles.push(startAngle + split.spreadRange * ratio);
+  }
+
+  return angles;
+}
+
+function getAimedFanSplitAngles(parentBullet, split) {
+  if (!player) {
+    return getFanDownSplitAngles(split);
+  }
+
+  const playerCenterX = player.x + player.width / 2;
+  const playerCenterY = player.y + player.height / 2;
+
+  const dx = playerCenterX - parentBullet.x;
+  const dy = playerCenterY - parentBullet.y;
+  const baseAngle = Math.atan2(dy, dx);
+
+  return getFanSplitAnglesByBaseAngle(split.count, baseAngle, split.spreadRange);
+}
+
+function getFanSplitAnglesByBaseAngle(count, baseAngle, spreadRange) {
+  const angles = [];
+  const safeCount = Math.max(count, 1);
+  const startAngle = baseAngle - spreadRange / 2;
+
+  for (let i = 0; i < safeCount; i += 1) {
+    const ratio = safeCount === 1 ? 0.5 : i / (safeCount - 1);
+    angles.push(startAngle + spreadRange * ratio);
+  }
+
+  return angles;
 }
 
 function isEnemyBulletOutOfScreen(enemyBullet) {

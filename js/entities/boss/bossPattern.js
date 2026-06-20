@@ -58,6 +58,11 @@ function createBossPhaseChangeEffect(bossObject, phase) {
 function fireBossPatternByPhase(bossObject, phase, timestamp) {
   bossObject.patternStep += 1;
 
+  if (bossObject.patternSet === "stage2") {
+    fireStageTwoBossPatternByPhase(bossObject, phase, timestamp);
+    return;
+  }
+
   if (phase === 1) {
     fireBossPhaseOnePattern(bossObject);
     bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(980);
@@ -124,6 +129,180 @@ function fireBossPhaseThreePattern(bossObject) {
       glowColor: "#fda4af",
     });
   }
+}
+
+function fireStageTwoBossPatternByPhase(bossObject, phase, timestamp) {
+  if (!isStageTwoSplitPatternReady()) {
+    fireFallbackBossPatternByPhase(bossObject, phase, timestamp);
+    return;
+  }
+
+  if (phase === 1) {
+    fireStageTwoBossPhaseOnePattern(bossObject);
+    bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(900);
+    return;
+  }
+
+  if (phase === 2) {
+    fireStageTwoBossPhaseTwoPattern(bossObject);
+    bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(740);
+    return;
+  }
+
+  fireStageTwoBossPhaseThreePattern(bossObject);
+  bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(430);
+}
+
+function fireFallbackBossPatternByPhase(bossObject, phase, timestamp) {
+  if (phase === 1) {
+    fireBossPhaseOnePattern(bossObject);
+    bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(980);
+    return;
+  }
+
+  if (phase === 2) {
+    fireBossPhaseTwoPattern(bossObject);
+    bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(860);
+    return;
+  }
+
+  fireBossPhaseThreePattern(bossObject);
+  bossObject.nextPatternShotAt = timestamp + getBossPatternCooldown(470);
+}
+
+function isStageTwoSplitPatternReady() {
+  return (
+    typeof shootSplitFanEnemyBullet === "function" &&
+    typeof shootSplitCircleEnemyBullet === "function" &&
+    typeof shootSplitAimedFanEnemyBullet === "function"
+  );
+}
+
+function fireStageTwoBossPhaseOnePattern(bossObject) {
+  if (bossObject.patternStep % 4 === 0) {
+    shootSplitFanEnemyBullet(bossObject, {
+      parentSpeed: 1.05,
+      splitDelay: 120,
+      splitCount: getStageTwoSplitFanCount(),
+      splitSpeed: 1.82,
+      spreadRange: Math.PI * 0.78,
+      color: "#fb923c",
+      glowColor: "#fed7aa",
+      splitColor: "#fb7185",
+      splitGlowColor: "#fda4af",
+    });
+
+    return;
+  }
+
+  shootBossWideFan(bossObject, getBossWideFanCount(), {
+    startAngle: Math.PI * 0.3,
+    endAngle: Math.PI * 0.7,
+    speed: 1.42,
+    radius: 5,
+    color: "#60a5fa",
+    glowColor: "#93c5fd",
+  });
+}
+
+function fireStageTwoBossPhaseTwoPattern(bossObject) {
+  if (bossObject.patternStep % 5 === 0) {
+    shootSplitCircleEnemyBullet(bossObject, {
+      parentSpeed: 0.86,
+      splitDelay: 135,
+      splitCount: getStageTwoSplitCircleCount(),
+      splitSpeed: 1.55,
+      color: "#a78bfa",
+      glowColor: "#ddd6fe",
+      splitColor: "#c084fc",
+      splitGlowColor: "#ddd6fe",
+    });
+
+    return;
+  }
+
+  if (bossObject.patternStep % 2 === 0) {
+    shootStageTwoSplitFanPair(bossObject);
+    return;
+  }
+
+  shootSplitAimedFanEnemyBullet(bossObject, {
+    parentSpeed: 1.02,
+    splitDelay: 118,
+    splitCount: getStageTwoSplitAimedFanCount(),
+    splitSpeed: 1.86,
+    spreadRange: Math.PI / 3.6,
+    color: "#f43f5e",
+    glowColor: "#fda4af",
+    splitColor: "#facc15",
+    splitGlowColor: "#fde68a",
+  });
+}
+
+function fireStageTwoBossPhaseThreePattern(bossObject) {
+  shootBossSpiralPair(bossObject, {
+    speed: 1.48,
+    radius: 4,
+    color: "#facc15",
+    glowColor: "#fde68a",
+  });
+
+  if (bossObject.patternStep % 2 === 0) {
+    shootSplitAimedFanEnemyBullet(bossObject, {
+      parentSpeed: 1.06,
+      splitDelay: 105,
+      splitCount: getStageTwoFinalSplitAimedFanCount(),
+      splitSpeed: 1.95,
+      spreadRange: Math.PI / 3.2,
+      color: "#fb7185",
+      glowColor: "#fda4af",
+      splitColor: "#fef08a",
+      splitGlowColor: "#fef3c7",
+    });
+  }
+
+  if (bossObject.patternStep % 5 === 0) {
+    shootSplitCircleEnemyBullet(bossObject, {
+      parentSpeed: 0.92,
+      splitDelay: 125,
+      splitCount: getStageTwoFinalSplitCircleCount(),
+      splitSpeed: 1.66,
+      color: "#c084fc",
+      glowColor: "#ddd6fe",
+      splitColor: "#f0abfc",
+      splitGlowColor: "#f5d0fe",
+    });
+  }
+}
+
+function shootStageTwoSplitFanPair(bossObject) {
+  shootSplitFanEnemyBullet(bossObject, {
+    offsetX: -24,
+    parentAngle: Math.PI * 0.48,
+    parentSpeed: 1.02,
+    splitDelay: 125,
+    splitCount: getStageTwoSplitFanPairCount(),
+    splitSpeed: 1.72,
+    spreadRange: Math.PI * 0.58,
+    color: "#fb923c",
+    glowColor: "#fed7aa",
+    splitColor: "#fb7185",
+    splitGlowColor: "#fda4af",
+  });
+
+  shootSplitFanEnemyBullet(bossObject, {
+    offsetX: 24,
+    parentAngle: Math.PI * 0.52,
+    parentSpeed: 1.02,
+    splitDelay: 125,
+    splitCount: getStageTwoSplitFanPairCount(),
+    splitSpeed: 1.72,
+    spreadRange: Math.PI * 0.58,
+    color: "#fb923c",
+    glowColor: "#fed7aa",
+    splitColor: "#fb7185",
+    splitGlowColor: "#fda4af",
+  });
 }
 
 function shootBossWideFan(bossObject, bulletCount, options) {
@@ -267,4 +446,46 @@ function getBossSpiralAngleStep() {
   if (selectedDifficultyType === "hard") return 0.42;
 
   return 0.34;
+}
+
+function getStageTwoSplitFanCount() {
+  if (selectedDifficultyType === "easy") return 6;
+  if (selectedDifficultyType === "hard") return 11;
+
+  return 8;
+}
+
+function getStageTwoSplitFanPairCount() {
+  if (selectedDifficultyType === "easy") return 5;
+  if (selectedDifficultyType === "hard") return 8;
+
+  return 6;
+}
+
+function getStageTwoSplitAimedFanCount() {
+  if (selectedDifficultyType === "easy") return 5;
+  if (selectedDifficultyType === "hard") return 9;
+
+  return 7;
+}
+
+function getStageTwoSplitCircleCount() {
+  if (selectedDifficultyType === "easy") return 8;
+  if (selectedDifficultyType === "hard") return 14;
+
+  return 10;
+}
+
+function getStageTwoFinalSplitAimedFanCount() {
+  if (selectedDifficultyType === "easy") return 6;
+  if (selectedDifficultyType === "hard") return 11;
+
+  return 8;
+}
+
+function getStageTwoFinalSplitCircleCount() {
+  if (selectedDifficultyType === "easy") return 10;
+  if (selectedDifficultyType === "hard") return 18;
+
+  return 14;
 }

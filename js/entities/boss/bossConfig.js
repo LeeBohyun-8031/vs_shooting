@@ -27,7 +27,7 @@ const BOSS_CONFIGS = {
     width: 104,
     height: 78,
     score: 9000,
-    patternSet: "basic",
+    patternSet: "stage2",
 
     enterTargetY: 92,
     enterSpeed: 1.45,
