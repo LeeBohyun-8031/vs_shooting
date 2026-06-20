@@ -57,8 +57,8 @@ function drawStageTimer() {
   if (gameState !== "playing") return;
 
   let text = "";
-  let textColor = "#bae6fd";
-  let borderColor = "rgba(125, 211, 252, 0.35)";
+  let markerColor = "rgba(250, 204, 21, 0.45)";
+  let accentColor = "#2563eb";
 
   if (stagePhase === "normal") {
     if (typeof getStageRemainingTime !== "function") return;
@@ -67,50 +67,109 @@ function drawStageTimer() {
     const timeText = formatStageTime(remainingTime);
 
     text = `TIME ${timeText}`;
-    textColor = "#bae6fd";
-    borderColor = "rgba(125, 211, 252, 0.35)";
   }
 
   if (stagePhase === "boss") {
     text = "BOSS STAGE";
-    textColor = "#fecaca";
-    borderColor = "rgba(248, 113, 113, 0.45)";
+    markerColor = "rgba(244, 114, 182, 0.38)";
+    accentColor = "#dc2626";
   }
 
   if (!text) return;
 
   ctx.save();
 
-  ctx.textAlign = "right";
-  ctx.textBaseline = "top";
+  ctx.font = "900 13px 'Comic Sans MS', 'Segoe Print', Arial";
 
-  ctx.font = "bold 13px Arial";
+  const iconWidth = 18;
+  const horizontalPadding = 10;
+  const panelWidth = Math.ceil(ctx.measureText(text).width) + iconWidth + horizontalPadding * 2;
+  const panelHeight = 31;
+  const isMobileLayout =
+    typeof isMobileControlMode === "function" && isMobileControlMode();
+  const panelX = isMobileLayout
+    ? 12
+    : CANVAS_WIDTH - panelWidth - 12;
+  const panelY = 10;
 
-  const x = CANVAS_WIDTH - 12;
-  const y = 10;
-  const paddingX = 8;
-  const paddingY = 5;
-  const textWidth = ctx.measureText(text).width;
+  ctx.translate(panelX + panelWidth / 2, panelY + panelHeight / 2);
+  ctx.rotate(isMobileLayout ? 0.012 : -0.012);
 
-  ctx.fillStyle = "rgba(2, 6, 23, 0.58)";
-  ctx.fillRect(
-    x - textWidth - paddingX * 2,
-    y - 3,
-    textWidth + paddingX * 2,
-    23
-  );
+  const left = -panelWidth / 2;
+  const top = -panelHeight / 2;
 
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(
-    x - textWidth - paddingX * 2,
-    y - 3,
-    textWidth + paddingX * 2,
-    23
-  );
+  ctx.fillStyle = "rgba(17, 24, 39, 0.22)";
+  drawStageTimerRoundedRect(left + 3, top + 4, panelWidth, panelHeight, 8);
+  ctx.fill();
 
-  ctx.fillStyle = textColor;
-  ctx.fillText(text, x - paddingX, y + paddingY - 1);
+  ctx.fillStyle = "rgba(255, 250, 240, 0.94)";
+  drawStageTimerRoundedRect(left, top, panelWidth, panelHeight, 8);
+  ctx.fill();
+
+  ctx.save();
+  ctx.setLineDash([5, 3]);
+  ctx.strokeStyle = "rgba(17, 24, 39, 0.78)";
+  ctx.lineWidth = 1.7;
+  drawStageTimerRoundedRect(left, top, panelWidth, panelHeight, 8);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.fillStyle = markerColor;
+  ctx.fillRect(left + horizontalPadding + iconWidth, top + 16, panelWidth - horizontalPadding * 2 - iconWidth, 8);
+
+  ctx.fillStyle = "rgba(250, 204, 21, 0.42)";
+  ctx.fillRect(-14, top - 2, 28, 6);
+
+  drawStageTimerIcon(left + horizontalPadding + 6, 0, stagePhase === "boss", accentColor);
+
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#111827";
+  ctx.fillText(text, left + horizontalPadding + iconWidth, 1);
+
+  ctx.restore();
+}
+
+function drawStageTimerRoundedRect(x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+function drawStageTimerIcon(x, y, isBossStage, accentColor) {
+  ctx.save();
+  ctx.strokeStyle = accentColor;
+  ctx.fillStyle = accentColor;
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = "round";
+
+  if (isBossStage) {
+    ctx.font = "900 17px 'Comic Sans MS', Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("!", x, y + 1);
+    ctx.restore();
+    return;
+  }
+
+  ctx.beginPath();
+  ctx.arc(x, y, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x, y - 3.5);
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + 3, y + 2);
+  ctx.stroke();
 
   ctx.restore();
 }
