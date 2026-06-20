@@ -50,14 +50,14 @@
           <p class="characterMoveGuide">← / → 방향키로 캐릭터를 고르세요</p>
 
           <div class="characterPreview">
-            <span class="characterArrowText">◀</span>
+            <button id="characterPrevButton" class="characterArrowText selection-arrow-button" type="button" tabindex="-1" aria-label="이전 캐릭터">◀</button>
 
-            <div class="characterDisplay">
+            <div id="characterSelectButton" class="characterDisplay selection-card" role="button" tabindex="-1" aria-label="이 캐릭터 선택">
               <div id="characterImageText" class="characterImageText">◆</div>
               <strong id="characterNameText">호밍 타입</strong>
             </div>
 
-            <span class="characterArrowText">▶</span>
+            <button id="characterNextButton" class="characterArrowText selection-arrow-button" type="button" tabindex="-1" aria-label="다음 캐릭터">▶</button>
           </div>
 
           <div id="characterDescriptionBox" class="characterDescriptionBox">
@@ -79,20 +79,18 @@
           <p class="difficultyMoveGuide">← / → 방향키로 난이도를 고르세요</p>
 
           <div class="difficultyPreview">
-            <span class="difficultyArrowText">◀</span>
+            <button id="difficultyPrevButton" class="difficultyArrowText selection-arrow-button" type="button" tabindex="-1" aria-label="이전 난이도">◀</button>
 
-            <div class="difficultyDisplay">
+            <div id="difficultySelectButton" class="difficultyDisplay selection-card" role="button" tabindex="-1" aria-label="이 난이도 선택">
               <div id="difficultyImageText" class="difficultyImageText">E</div>
               <strong id="difficultyNameText">이지</strong>
               <span id="difficultyStarsText" class="difficultyStarsText">★☆☆☆☆</span>
             </div>
 
-            <span class="difficultyArrowText">▶</span>
+            <button id="difficultyNextButton" class="difficultyArrowText selection-arrow-button" type="button" tabindex="-1" aria-label="다음 난이도">▶</button>
           </div>
 
-          <p id="difficultyGuideText" class="difficultyConfirmGuide">
-            Z : 결정 / X : 돌아가기
-          </p>
+          <button id="difficultyGuideText" class="difficultyConfirmGuide selection-back-button" type="button" tabindex="-1">돌아가기</button>
         </div>
       </section>
 

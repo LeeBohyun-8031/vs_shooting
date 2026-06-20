@@ -79,7 +79,10 @@ function updateCharacterSelectUI() {
   characterDescriptionText.textContent = character.description;
 
   characterDescriptionBox.classList.add("active");
-  characterGuideText.textContent = "Z : 결정";
+  characterGuideText.textContent =
+    typeof isMobileControlMode === "function" && isMobileControlMode()
+      ? "가운데 캐릭터를 터치해 선택"
+      : "Z : 결정";
 }
 
 function moveCharacterSelect(direction) {
@@ -153,7 +156,10 @@ function updateDifficultySelectUI() {
   difficultyImageText.textContent = difficulty.imageText;
   difficultyNameText.textContent = difficulty.name;
   difficultyStarsText.textContent = createDifficultyStars(difficulty.starCount);
-  difficultyGuideText.textContent = "Z : 선택 / X : 돌아가기";
+  difficultyGuideText.textContent =
+    typeof isMobileControlMode === "function" && isMobileControlMode()
+      ? "돌아가기"
+      : "Z : 선택 / X : 돌아가기";
 }
 
 function moveDifficultySelect(direction) {

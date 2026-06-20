@@ -33,9 +33,15 @@ const characterNameText = document.getElementById("characterNameText");
 const characterDescriptionBox = document.getElementById("characterDescriptionBox");
 const characterDescriptionText = document.getElementById("characterDescriptionText");
 const characterGuideText = document.getElementById("characterGuideText");
+const characterPrevButton = document.getElementById("characterPrevButton");
+const characterNextButton = document.getElementById("characterNextButton");
+const characterSelectButton = document.getElementById("characterSelectButton");
 
 const difficultyImageText = document.getElementById("difficultyImageText");
 const difficultyNameText = document.getElementById("difficultyNameText");
 const difficultyStarsText = document.getElementById("difficultyStarsText");
 const difficultyGuideText = document.getElementById("difficultyGuideText");
+const difficultyPrevButton = document.getElementById("difficultyPrevButton");
+const difficultyNextButton = document.getElementById("difficultyNextButton");
+const difficultySelectButton = document.getElementById("difficultySelectButton");
 const mobileControls = document.getElementById("mobileControls");

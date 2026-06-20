@@ -24,7 +24,70 @@ function isMobileControlMode() {
 
 function setMobileControlsVisible(visible) {
   if (!mobileControls) return;
-  mobileControls.classList.toggle("active", visible && isMobileControlMode());
+  mobileControls.classList.toggle(
+    "active",
+    visible && gameState === "playing" && isMobileControlMode()
+  );
+}
+
+function handleSelectionCardKeyDown(event, confirmSelection) {
+  if (!isMobileControlMode()) return;
+  if (event.code !== "Enter" && event.code !== "Space") return;
+  event.preventDefault();
+  confirmSelection();
+}
+
+function bindSelectionControls() {
+  const selectionElements = [
+    characterPrevButton,
+    characterNextButton,
+    characterSelectButton,
+    difficultyPrevButton,
+    difficultyNextButton,
+    difficultySelectButton,
+    difficultyGuideText,
+  ];
+
+  const updateSelectionTabOrder = () => {
+    const tabIndex = isMobileControlMode() ? "0" : "-1";
+    selectionElements.forEach((element) => element.setAttribute("tabindex", tabIndex));
+  };
+
+  updateSelectionTabOrder();
+
+  characterPrevButton.addEventListener("click", () => {
+    if (isMobileControlMode()) moveCharacterSelect(-1);
+  });
+  characterNextButton.addEventListener("click", () => {
+    if (isMobileControlMode()) moveCharacterSelect(1);
+  });
+  characterSelectButton.addEventListener("click", () => {
+    if (isMobileControlMode()) confirmCharacterSelect();
+  });
+  characterSelectButton.addEventListener("keydown", (event) => {
+    handleSelectionCardKeyDown(event, confirmCharacterSelect);
+  });
+
+  difficultyPrevButton.addEventListener("click", () => {
+    if (isMobileControlMode()) moveDifficultySelect(-1);
+  });
+  difficultyNextButton.addEventListener("click", () => {
+    if (isMobileControlMode()) moveDifficultySelect(1);
+  });
+  difficultySelectButton.addEventListener("click", () => {
+    if (isMobileControlMode()) confirmDifficultySelect();
+  });
+  difficultySelectButton.addEventListener("keydown", (event) => {
+    handleSelectionCardKeyDown(event, confirmDifficultySelect);
+  });
+
+  difficultyGuideText.addEventListener("click", () => {
+    if (!isMobileControlMode()) return;
+    playInputSfx("select");
+    openCharacterSelect();
+  });
+
+  window.addEventListener("resize", updateSelectionTabOrder);
 }
 
 function handleMobileDirectionPress(code) {
@@ -339,6 +402,7 @@ function bindEvents() {
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("keyup", handleKeyUp);
   bindMobileControls();
+  bindSelectionControls();
 
   startButton.addEventListener("click", () => {
     safeUnlockSound();
