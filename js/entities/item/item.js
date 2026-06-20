@@ -54,7 +54,9 @@ function getRandomDropItemType() {
 
   const lifeChance = ITEM_DROP_CONFIG.lifeChance;
   const bombChance = ITEM_DROP_CONFIG.bombChance;
-  const powerChance = ITEM_DROP_CONFIG.powerChance;
+  const powerChance = canDropPowerItem()
+    ? ITEM_DROP_CONFIG.powerChance
+    : 0;
 
   if (random < lifeChance) {
     return ITEM_TYPES.LIFE;
@@ -69,6 +71,14 @@ function getRandomDropItemType() {
   }
 
   return null;
+}
+
+function canDropPowerItem() {
+  if (!player) return false;
+
+  const shotLevel = clamp(player.shotLevel || 1, 1, 3);
+
+  return shotLevel < 3;
 }
 
 function updateItems() {
