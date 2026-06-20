@@ -94,43 +94,23 @@ function bindSelectionControls() {
   window.addEventListener("resize", updateSelectionTabOrder);
 }
 
-const MOBILE_DOUBLE_TAP_DELAY = 320;
-const MOBILE_DOUBLE_TAP_DISTANCE = 48;
-const MOBILE_TAP_MOVE_LIMIT = 16;
-
 let activeCanvasPointerId = null;
-let canvasTouchStartTime = 0;
-let canvasTouchStartX = 0;
-let canvasTouchStartY = 0;
 let canvasTouchLastX = 0;
 let canvasTouchLastY = 0;
-let canvasTouchTravel = 0;
-let canvasDoubleTapTriggered = false;
-let lastCanvasTapTime = 0;
-let lastCanvasTapX = 0;
-let lastCanvasTapY = 0;
+let twoFingerBombTriggered = false;
 
 function resetMobileCanvasGesture() {
   keys.KeyZ = false;
   activeCanvasPointerId = null;
-  canvasDoubleTapTriggered = false;
-  lastCanvasTapTime = 0;
+  twoFingerBombTriggered = false;
 }
 
 function releaseMobileCanvasTouch(event) {
   if (event.pointerId !== activeCanvasPointerId) return;
 
-  const touchDuration = performance.now() - canvasTouchStartTime;
-  const isShortTap = canvasTouchTravel <= MOBILE_TAP_MOVE_LIMIT && touchDuration <= MOBILE_DOUBLE_TAP_DELAY;
-
-  if (isShortTap && !canvasDoubleTapTriggered) {
-    lastCanvasTapTime = performance.now();
-    lastCanvasTapX = canvasTouchStartX;
-    lastCanvasTapY = canvasTouchStartY;
-  }
-
   keys.KeyZ = false;
   activeCanvasPointerId = null;
+  twoFingerBombTriggered = false;
 }
 
 function bindMobileCanvasControls() {
@@ -168,30 +148,19 @@ function bindMobileCanvasControls() {
       return;
     }
 
-    if (activeCanvasPointerId !== null) return;
+    if (activeCanvasPointerId !== null) {
+      if (!twoFingerBombTriggered) {
+        useBomb();
+        twoFingerBombTriggered = true;
+      }
 
-    const now = performance.now();
-    const distanceFromLastTap = Math.hypot(
-      event.clientX - lastCanvasTapX,
-      event.clientY - lastCanvasTapY
-    );
-
-    canvasDoubleTapTriggered =
-      now - lastCanvasTapTime <= MOBILE_DOUBLE_TAP_DELAY &&
-      distanceFromLastTap <= MOBILE_DOUBLE_TAP_DISTANCE;
-
-    if (canvasDoubleTapTriggered) {
-      useBomb();
-      lastCanvasTapTime = 0;
+      return;
     }
 
     activeCanvasPointerId = event.pointerId;
-    canvasTouchStartTime = now;
-    canvasTouchStartX = event.clientX;
-    canvasTouchStartY = event.clientY;
     canvasTouchLastX = event.clientX;
     canvasTouchLastY = event.clientY;
-    canvasTouchTravel = 0;
+    twoFingerBombTriggered = false;
 
     canvas.setPointerCapture(event.pointerId);
     keys.KeyZ = true;
@@ -207,7 +176,6 @@ function bindMobileCanvasControls() {
     const deltaX = event.clientX - canvasTouchLastX;
     const deltaY = event.clientY - canvasTouchLastY;
 
-    canvasTouchTravel += Math.hypot(deltaX, deltaY);
     canvasTouchLastX = event.clientX;
     canvasTouchLastY = event.clientY;
 

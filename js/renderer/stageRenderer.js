@@ -265,7 +265,7 @@ function drawStageClearPanel(
     const touchButtons = getStageClearTouchButtonBounds();
 
     drawStageClearTouchButton(
-      `${nextStageConfig.name} 이동`,
+      "다음 스테이지",
       touchButtons.next,
       "#2563eb",
       "rgba(96, 165, 250, 0.2)"
