@@ -128,3 +128,109 @@
     bottom: 24px;
   }
 }
+
+.mobile-controls {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  body {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .mobile-controls.active {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: block;
+    pointer-events: none;
+  }
+
+  .mobile-control {
+    position: absolute;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border: 2px solid rgba(255, 250, 240, 0.86);
+    border-radius: 50%;
+    background: rgba(17, 24, 39, 0.48);
+    color: #fffaf0;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 50px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.34);
+    transform: none;
+    backdrop-filter: blur(3px);
+    pointer-events: auto;
+    touch-action: none;
+  }
+
+  .mobile-control.pressed {
+    background: rgba(250, 204, 21, 0.72);
+    color: #111827;
+    transform: scale(0.92);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+  }
+
+  .mobile-dpad {
+    position: absolute;
+    left: max(14px, env(safe-area-inset-left));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: 166px;
+    height: 166px;
+  }
+
+  .mobile-control--up { left: 56px; top: 0; }
+  .mobile-control--left { left: 0; top: 56px; }
+  .mobile-control--down { left: 56px; top: 112px; }
+  .mobile-control--right { left: 112px; top: 56px; }
+
+  .mobile-actions {
+    position: absolute;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(28px, env(safe-area-inset-bottom));
+    width: 138px;
+    height: 120px;
+  }
+
+  .mobile-control--fire {
+    right: 0;
+    bottom: 0;
+    width: 70px;
+    height: 70px;
+    background: rgba(37, 99, 235, 0.62);
+    font-size: 25px;
+    line-height: 66px;
+  }
+
+  .mobile-control--bomb {
+    left: 0;
+    top: 0;
+    background: rgba(220, 38, 38, 0.6);
+  }
+
+  .mobile-control--pause {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    width: 42px;
+    height: 42px;
+    font-size: 16px;
+    line-height: 38px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (max-height: 700px) {
+  .mobile-dpad,
+  .mobile-actions {
+    transform: scale(0.82);
+    transform-origin: bottom left;
+  }
+
+  .mobile-actions {
+    transform-origin: bottom right;
+  }
+}

@@ -38,3 +38,4 @@ const difficultyImageText = document.getElementById("difficultyImageText");
 const difficultyNameText = document.getElementById("difficultyNameText");
 const difficultyStarsText = document.getElementById("difficultyStarsText");
 const difficultyGuideText = document.getElementById("difficultyGuideText");
+const mobileControls = document.getElementById("mobileControls");

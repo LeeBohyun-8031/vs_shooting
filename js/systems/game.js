@@ -50,6 +50,7 @@ function startGame() {
   resetGame();
 
   gameState = "playing";
+  setMobileControlsVisible(true);
 
   hidePauseScreen();
 
@@ -73,6 +74,7 @@ function pauseGame() {
   if (gameState !== "playing") return;
 
   gameState = "paused";
+  setMobileControlsVisible(false);
   pausedStartTime = performance.now();
 
   resetInputState();
@@ -95,6 +97,7 @@ function resumeGame() {
 
   pausedStartTime = 0;
   gameState = "playing";
+  setMobileControlsVisible(true);
 
   resetInputState();
 
@@ -116,6 +119,7 @@ function restartPausedGame() {
   resetGame();
 
   gameState = "playing";
+  setMobileControlsVisible(true);
 
   if (typeof startStage === "function") {
     startStage(0);
@@ -137,6 +141,7 @@ function returnToMainFromPause() {
   resetGame();
 
   gameState = "ready";
+  setMobileControlsVisible(false);
 
   startScreen.classList.add("active");
   characterScreen.classList.remove("active");
@@ -157,6 +162,7 @@ function hidePauseScreen() {
 
 function endGame(forceNickname = false) {
   gameState = "gameOver";
+  setMobileControlsVisible(false);
   cancelAnimationFrame(animationId);
 
   hidePauseScreen();

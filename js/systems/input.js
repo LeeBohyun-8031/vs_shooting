@@ -18,6 +18,120 @@ function playInputSfx(type) {
   }
 }
 
+function isMobileControlMode() {
+  return window.matchMedia("(hover: none), (pointer: coarse)").matches;
+}
+
+function setMobileControlsVisible(visible) {
+  if (!mobileControls) return;
+  mobileControls.classList.toggle("active", visible && isMobileControlMode());
+}
+
+function handleMobileDirectionPress(code) {
+  safeUnlockSound();
+
+  if (gameState === "characterSelect") {
+    if (code === "ArrowLeft") moveCharacterSelect(-1);
+    if (code === "ArrowRight") moveCharacterSelect(1);
+    return;
+  }
+
+  if (gameState === "difficultySelect") {
+    if (code === "ArrowLeft") moveDifficultySelect(-1);
+    if (code === "ArrowRight") moveDifficultySelect(1);
+    return;
+  }
+
+  if (gameState === "playing" && code in keys) keys[code] = true;
+}
+
+function handleMobileFirePress() {
+  safeUnlockSound();
+
+  if (gameState === "characterSelect") {
+    confirmCharacterSelect();
+    return;
+  }
+
+  if (gameState === "difficultySelect") {
+    confirmDifficultySelect();
+    return;
+  }
+
+  if (gameState === "playing" && stagePhase === "clear") {
+    playInputSfx("confirm");
+    if (typeof goToNextStageFromClear === "function") goToNextStageFromClear();
+    return;
+  }
+
+  if (gameState === "playing") keys.KeyZ = true;
+}
+
+function handleMobileBombPress() {
+  safeUnlockSound();
+
+  if (gameState === "characterSelect" && characterSelectMode === "detail") {
+    backToCharacterSelect();
+    return;
+  }
+
+  if (gameState === "difficultySelect") {
+    playInputSfx("select");
+    openCharacterSelect();
+    return;
+  }
+
+  if (gameState === "playing" && stagePhase === "clear") {
+    playInputSfx("select");
+    if (typeof finishGameFromStageClear === "function") finishGameFromStageClear();
+    return;
+  }
+
+  if (gameState === "playing" && !bombPressed) {
+    useBomb();
+    bombPressed = true;
+  }
+}
+
+function releaseMobileControl(button) {
+  const code = button.dataset.key;
+  const action = button.dataset.action;
+
+  if (code && code in keys) keys[code] = false;
+  if (action === "fire") keys.KeyZ = false;
+  if (action === "bomb") bombPressed = false;
+  button.classList.remove("pressed");
+}
+
+function bindMobileControls() {
+  if (!mobileControls) return;
+
+  mobileControls.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("contextmenu", (event) => event.preventDefault());
+    button.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      button.setPointerCapture(event.pointerId);
+      button.classList.add("pressed");
+
+      const code = button.dataset.key;
+      const action = button.dataset.action;
+
+      if (code) handleMobileDirectionPress(code);
+      if (action === "fire") handleMobileFirePress();
+      if (action === "bomb") handleMobileBombPress();
+      if (action === "pause") pauseGame();
+    });
+
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
+      button.addEventListener(eventName, () => releaseMobileControl(button));
+    });
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) resetInputState();
+  });
+}
+
 function handleCharacterSelectKeyDown(event) {
   if (event.code === "ArrowLeft") {
     event.preventDefault();
@@ -224,17 +338,20 @@ function handleKeyUp(event) {
 function bindEvents() {
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("keyup", handleKeyUp);
+  bindMobileControls();
 
   startButton.addEventListener("click", () => {
     safeUnlockSound();
     playInputSfx("gameStart");
     openCharacterSelect();
+    setMobileControlsVisible(true);
   });
 
   restartButton.addEventListener("click", () => {
     safeUnlockSound();
     playInputSfx("confirm");
     openCharacterSelect();
+    setMobileControlsVisible(true);
   });
 
   saveRankButton.addEventListener("click", () => {

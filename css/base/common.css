@@ -26,6 +26,7 @@ html,
 body {
   width: 100%;
   min-height: 100%;
+  overscroll-behavior: none;
 }
 
 body {
@@ -216,4 +217,9 @@ h2 {
 
 .modalHeader h2 {
   background: linear-gradient(transparent 48%, var(--marker-yellow) 48% 82%, transparent 82%);
+}
+
+button,
+#gameCanvas {
+  -webkit-tap-highlight-color: transparent;
 }

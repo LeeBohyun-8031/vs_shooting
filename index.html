@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#7c451f" />
 
   <title>스케치 슈터</title>
 
@@ -131,6 +132,20 @@
           <p class="pause-guide">ESC : 이어하기</p>
         </div>
       </section>
+
+      <div id="mobileControls" class="mobile-controls" aria-label="모바일 게임 조작키">
+        <button class="mobile-control mobile-control--pause" type="button" data-action="pause" aria-label="일시정지">Ⅱ</button>
+        <div class="mobile-dpad" aria-label="이동 방향키">
+          <button class="mobile-control mobile-control--up" type="button" data-key="ArrowUp" aria-label="위로 이동">▲</button>
+          <button class="mobile-control mobile-control--left" type="button" data-key="ArrowLeft" aria-label="왼쪽으로 이동">◀</button>
+          <button class="mobile-control mobile-control--down" type="button" data-key="ArrowDown" aria-label="아래로 이동">▼</button>
+          <button class="mobile-control mobile-control--right" type="button" data-key="ArrowRight" aria-label="오른쪽으로 이동">▶</button>
+        </div>
+        <div class="mobile-actions" aria-label="게임 액션키">
+          <button class="mobile-control mobile-control--bomb" type="button" data-action="bomb" aria-label="폭탄 또는 뒤로">B</button>
+          <button class="mobile-control mobile-control--fire" type="button" data-action="fire" aria-label="발사 또는 선택">A</button>
+        </div>
+      </div>
     </main>
 
     <button id="rankingButton" type="button">랭킹</button>
