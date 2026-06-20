@@ -125,7 +125,7 @@ const STAGE_CONFIGS = [
   {
     stage: 1,
     name: "Stage 1",
-    normalDuration: 1000,
+    normalDuration: 150000,
     bossIntroDuration: 4000,
     clearDuration: 3000,
     bossId: "stage1Boss",
@@ -133,7 +133,7 @@ const STAGE_CONFIGS = [
   {
     stage: 2,
     name: "Stage 2",
-    normalDuration: 1000,
+    normalDuration: 150000,
     bossIntroDuration: 4000,
     clearDuration: 3000,
     bossId: "stage2Boss",

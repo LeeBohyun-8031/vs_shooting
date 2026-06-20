@@ -1,5 +1,40 @@
+const PLAYER_ASSET_PATHS = {
+  homing: "assets/images/player/player_homing.png",
+  power: "assets/images/player/player_power.png",
+};
+
+const PLAYER_ASSET_IMAGES = createPlayerAssetImages();
+
+function createPlayerAssetImages() {
+  const images = {};
+
+  Object.keys(PLAYER_ASSET_PATHS).forEach((type) => {
+    const image = new Image();
+
+    image.src = PLAYER_ASSET_PATHS[type];
+    image.loaded = false;
+    image.failed = false;
+
+    image.onload = () => {
+      image.loaded = true;
+    };
+
+    image.onerror = () => {
+      image.failed = true;
+    };
+
+    images[type] = image;
+  });
+
+  return images;
+}
+
 function drawPlayer() {
   if (!player) return;
+
+  if (drawPlayerAssetImage()) {
+    return;
+  }
 
   if (
     player.invincibleTime > 0 &&
@@ -37,6 +72,12 @@ function drawPlayer() {
 
 function drawAssistUnits() {
   if (!player || gameState !== "playing") return;
+
+  if (getCurrentPlayerAssetType() === "power") {
+    drawPowerMissilePorts();
+    return;
+  }
+
   if (typeof getAssistShotPositions !== "function") return;
 
   const assistPositions = getAssistShotPositions();
@@ -79,6 +120,36 @@ function drawAssistUnit(position) {
   ctx.restore();
 }
 
+function drawPowerMissilePorts() {
+  const centerX = player.x + player.width / 2;
+  const centerY = player.y + player.height / 2;
+
+  drawPowerMissilePort(centerX - 30, centerY + 10, -0.18);
+  drawPowerMissilePort(centerX + 30, centerY + 10, 0.18);
+}
+
+function drawPowerMissilePort(x, y, rotation) {
+  const width = 11;
+  const height = 28;
+
+  ctx.save();
+
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+
+  ctx.fillStyle = "#111827";
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+
+  ctx.strokeStyle = "#020617";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(-width / 2, -height / 2, width, height);
+
+  ctx.fillStyle = "#f97316";
+  ctx.fillRect(-width / 2 + 2, height / 2 - 6, width - 4, 4);
+
+  ctx.restore();
+}
+
 function drawPlayerHitbox() {
   if (!player) return;
   if (!keys.ShiftLeft && !keys.ShiftRight) return;
@@ -106,4 +177,74 @@ function drawPlayerHitbox() {
   ctx.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 
   ctx.restore();
+}
+
+function getCurrentPlayerAssetType() {
+  if (typeof selectedCharacterType === "string") {
+    return selectedCharacterType;
+  }
+
+  if (
+    typeof selectedCharacterConfig === "object" &&
+    selectedCharacterConfig &&
+    typeof selectedCharacterConfig.type === "string"
+  ) {
+    return selectedCharacterConfig.type;
+  }
+
+  if (
+    typeof selectedCharacterIndex === "number" &&
+    Array.isArray(CHARACTER_CONFIGS) &&
+    CHARACTER_CONFIGS[selectedCharacterIndex] &&
+    typeof CHARACTER_CONFIGS[selectedCharacterIndex].type === "string"
+  ) {
+    return CHARACTER_CONFIGS[selectedCharacterIndex].type;
+  }
+
+  if (player && typeof player.characterType === "string") {
+    return player.characterType;
+  }
+
+  if (player && typeof player.type === "string") {
+    return player.type;
+  }
+
+  return "homing";
+}
+
+function getCurrentPlayerAssetImage() {
+  const type = getCurrentPlayerAssetType();
+  const image = PLAYER_ASSET_IMAGES[type];
+
+  if (!image || image.failed || !image.loaded) {
+    return null;
+  }
+
+  return image;
+}
+
+function drawPlayerAssetImage() {
+  const image = getCurrentPlayerAssetImage();
+
+  if (!image) {
+    return false;
+  }
+
+  const assetType = getCurrentPlayerAssetType();
+
+  const renderWidth = assetType === "power" ? 78 : 72;
+  const renderHeight = assetType === "power" ? 78 : 72;
+
+  const centerX = player.x + player.width / 2;
+  const centerY = player.y + player.height / 2;
+
+  const drawX = centerX - renderWidth / 2;
+  const drawY = centerY - renderHeight / 2 - 6;
+
+  ctx.save();
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(image, drawX, drawY, renderWidth, renderHeight);
+  ctx.restore();
+
+  return true;
 }

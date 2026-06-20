@@ -8,6 +8,50 @@ function safePlaySfx(type) {
   }
 }
 
+const CHARACTER_PREVIEW_ASSET_PATHS = {
+  homing: "assets/images/player/player_homing.png",
+  power: "assets/images/player/player_power.png",
+};
+
+function updateCharacterPreviewImage(character) {
+  if (!characterImageText) return;
+
+  characterImageText.textContent = "";
+  characterImageText.innerHTML = "";
+  characterImageText.classList.remove("is-homing", "is-power", "is-fallback");
+
+  if (!character || !character.type) {
+    setCharacterPreviewFallback(character);
+    return;
+  }
+
+  const imagePath = CHARACTER_PREVIEW_ASSET_PATHS[character.type];
+
+  if (!imagePath) {
+    setCharacterPreviewFallback(character);
+    return;
+  }
+
+  characterImageText.classList.add("is-" + character.type);
+
+  characterImageText.innerHTML =
+    '<img src="' +
+    imagePath +
+    '" alt="' +
+    character.name +
+    '" class="characterPreviewImage ' +
+    character.type +
+    '" />';
+}
+
+function setCharacterPreviewFallback(character) {
+  if (!characterImageText) return;
+
+  characterImageText.innerHTML = "";
+  characterImageText.textContent = character && character.imageText ? character.imageText : "?";
+  characterImageText.classList.add("is-fallback");
+}
+
 function openCharacterSelect() {
   gameState = "characterSelect";
   characterSelectMode = "select";
@@ -30,19 +74,12 @@ function updateCharacterSelectUI() {
   const character = CHARACTER_CONFIGS[selectedCharacterIndex];
 
   selectedCharacterType = character.type;
-  characterImageText.textContent = character.imageText;
+  updateCharacterPreviewImage(character);
   characterNameText.textContent = character.name;
   characterDescriptionText.textContent = character.description;
 
-  if (characterSelectMode === "select") {
-    characterDescriptionBox.classList.remove("active");
-    characterGuideText.textContent = "Z : 선택";
-  }
-
-  if (characterSelectMode === "detail") {
-    characterDescriptionBox.classList.add("active");
-    characterGuideText.textContent = "Z : 결정 / X : 돌아가기";
-  }
+  characterDescriptionBox.classList.add("active");
+  characterGuideText.textContent = "Z : 결정";
 }
 
 function moveCharacterSelect(direction) {
@@ -64,7 +101,7 @@ function moveCharacterSelect(direction) {
 }
 
 function showCharacterDetail() {
-  characterSelectMode = "detail";
+  characterSelectMode = "select";
 
   safePlaySfx("confirm");
 
@@ -80,15 +117,8 @@ function backToCharacterSelect() {
 }
 
 function confirmCharacterSelect() {
-  if (characterSelectMode === "select") {
-    showCharacterDetail();
-    return;
-  }
-
-  if (characterSelectMode === "detail") {
-    safePlaySfx("confirm");
-    openDifficultySelect();
-  }
+  safePlaySfx("confirm");
+  openDifficultySelect();
 }
 
 function openDifficultySelect() {

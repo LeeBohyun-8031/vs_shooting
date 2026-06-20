@@ -6,9 +6,58 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  isolation: isolate;
+}
+
+#gameWrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 560px;
+  height: 790px;
+  transform: translate(-50%, -50%) rotate(-0.7deg);
+  border-radius: 24px 24px 30px 30px;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.35), transparent 20%),
+    radial-gradient(circle at 78% 24%, rgba(120, 72, 32, 0.22), transparent 18%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(74, 45, 22, 0.1) 0,
+      rgba(74, 45, 22, 0.1) 1px,
+      transparent 1px,
+      transparent 42px
+    ),
+    linear-gradient(135deg, #d6aa6d 0%, #c0843f 48%, #9b5b28 100%);
+  border: 4px solid rgba(73, 42, 18, 0.8);
+  box-shadow:
+    16px 22px 35px rgba(35, 20, 10, 0.42),
+    inset 0 0 0 4px rgba(255, 239, 203, 0.22),
+    inset 0 -18px 28px rgba(77, 43, 18, 0.18);
+  z-index: -2;
+}
+
+#gameWrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 386px);
+  width: 150px;
+  height: 46px;
+  transform: translateX(-50%) rotate(-0.7deg);
+  border-radius: 0 0 26px 26px;
+  background:
+    linear-gradient(180deg, #d1d5db 0%, #9ca3af 45%, #6b7280 100%);
+  border: 3px solid rgba(31, 41, 55, 0.78);
+  box-shadow:
+    0 8px 12px rgba(31, 41, 55, 0.32),
+    inset 0 4px 0 rgba(255, 255, 255, 0.45);
+  z-index: -1;
 }
 
 #gameHeader {
+  position: relative;
+  z-index: 1;
   width: 480px;
   margin-bottom: 12px;
   display: flex;
@@ -41,15 +90,17 @@
 
 #gameArea {
   position: relative;
+  z-index: 1;
   width: 480px;
   height: 640px;
-  border: 2px solid rgba(125, 211, 252, 0.75);
-  border-radius: 16px;
-  background: #020617;
+  border: 3px solid rgba(73, 42, 18, 0.78);
+  border-radius: 18px;
+  background: #fffaf0;
   overflow: hidden;
   box-shadow:
-    0 0 24px rgba(56, 189, 248, 0.35),
-    0 0 80px rgba(15, 23, 42, 0.9);
+    0 0 0 5px rgba(255, 239, 203, 0.78),
+    0 0 0 8px rgba(73, 42, 18, 0.55),
+    8px 11px 18px rgba(35, 20, 10, 0.32);
 }
 
 #gameCanvas {
@@ -162,16 +213,58 @@
 }
 
 .characterImageText {
-  width: 104px;
-  height: 104px;
+  width: 132px;
+  height: 132px;
   margin-bottom: 18px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.35), rgba(15, 23, 42, 0.92));
-  color: #e0f2fe;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 250, 240, 0.92), rgba(250, 204, 21, 0.16) 62%, rgba(17, 24, 39, 0.08) 100%);
+  color: #111827;
   font-size: 54px;
-  line-height: 104px;
+  line-height: 1;
   text-align: center;
-  text-shadow: 0 0 18px rgba(56, 189, 248, 0.85);
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border: 2px dashed rgba(17, 24, 39, 0.38);
+}
+
+.characterPreviewImage {
+  display: block;
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  filter:
+    drop-shadow(2px 3px 0 rgba(17, 24, 39, 0.28))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.42));
+}
+
+.characterPreviewImage.power {
+  width: 124px;
+  height: 124px;
+}
+
+.characterPreviewImage.homing {
+  width: 118px;
+  height: 118px;
+}
+
+.characterImageText.is-power {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 247, 237, 0.96), rgba(251, 146, 60, 0.18) 62%, rgba(17, 24, 39, 0.08) 100%);
+}
+
+.characterImageText.is-homing {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(239, 246, 255, 0.96), rgba(96, 165, 250, 0.18) 62%, rgba(17, 24, 39, 0.08) 100%);
+}
+
+.characterImageText.is-fallback {
+  border-radius: 999px;
+  font-size: 54px;
+  line-height: 132px;
 }
 
 #characterNameText {
@@ -406,4 +499,669 @@
   margin: 18px 0 0;
   color: #94a3b8;
   font-size: 13px;
+}
+
+/* ===== Start Screen Notebook Memo Polish ===== */
+
+#startScreen {
+  padding: 34px;
+  background: rgba(255, 250, 240, 0.08);
+  backdrop-filter: none;
+  overflow: hidden;
+}
+
+#startScreen::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 360px;
+  height: 455px;
+  transform: translate(-50%, -50%) rotate(-0.8deg);
+  border: 3px solid rgba(17, 24, 39, 0.82);
+  border-radius: 18px 22px 20px 16px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 34px,
+      rgba(248, 113, 113, 0.24) 35px 37px,
+      transparent 38px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 250, 240, 0.98) 0,
+      rgba(255, 250, 240, 0.98) 25px,
+      rgba(96, 165, 250, 0.18) 26px,
+      rgba(255, 250, 240, 0.98) 27px
+    );
+  box-shadow:
+    7px 9px 0 rgba(17, 24, 39, 0.22),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+  z-index: 0;
+}
+
+#startScreen::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 242px);
+  width: 112px;
+  height: 28px;
+  transform: translateX(-50%) rotate(1.2deg);
+  border-radius: 5px;
+  background: rgba(250, 204, 21, 0.42);
+  box-shadow:
+    0 2px 0 rgba(161, 98, 7, 0.18),
+    inset 0 0 12px rgba(255, 255, 255, 0.32);
+  z-index: 1;
+}
+
+#startScreen > * {
+  position: relative;
+  z-index: 2;
+}
+
+#startScreen h2 {
+  margin-bottom: 18px;
+  padding: 0 12px 4px;
+  color: #111827;
+  font-size: 38px;
+  line-height: 1.1;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.75),
+    -1px 0 0 rgba(248, 113, 113, 0.22);
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.5) 48% 82%,
+    transparent 82%
+  );
+  transform: rotate(-0.6deg);
+}
+
+#startScreen p {
+  margin-bottom: 7px;
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+  text-shadow: none;
+}
+
+#startScreen .controlGuide {
+  width: 260px;
+  margin: 22px 0 28px;
+  padding: 15px 18px;
+  border: 2px dashed rgba(17, 24, 39, 0.72);
+  border-radius: 13px 16px 14px 12px;
+  background:
+    linear-gradient(transparent 0 94%, rgba(96, 165, 250, 0.16) 94%),
+    rgba(255, 255, 255, 0.48);
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.16);
+  transform: rotate(0.35deg);
+}
+
+#startScreen .controlGuide p {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #111827;
+  font-size: 15px;
+}
+
+#startScreen .controlGuide p:last-child {
+  margin-bottom: 0;
+}
+
+#startScreen .controlGuide strong {
+  color: #2563eb;
+  font-weight: 900;
+}
+
+#startScreen #startButton {
+  min-width: 162px;
+  padding: 12px 22px;
+  border: 3px solid #111827;
+  border-radius: 16px 20px 15px 19px;
+  background:
+    linear-gradient(transparent 50%, rgba(250, 204, 21, 0.46) 50% 78%, transparent 78%),
+    #fffaf0;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 900;
+  box-shadow: 4px 5px 0 rgba(17, 24, 39, 0.82);
+  transform: rotate(-0.5deg);
+  filter: none;
+}
+
+#startScreen #startButton:hover {
+  background:
+    linear-gradient(transparent 42%, rgba(244, 114, 182, 0.32) 42% 78%, transparent 78%),
+    #fffaf0;
+  color: #111827;
+  transform: translate(1px, 1px) rotate(0.4deg);
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.82);
+  filter: none;
+}
+
+#startScreen #startButton:active {
+  transform: translate(4px, 5px) rotate(0deg);
+  box-shadow: 0 0 0 rgba(17, 24, 39, 0.82);
+}
+
+/* ===== Header HUD Notebook Label Polish ===== */
+
+#gameInfo span {
+  padding: 6px 11px;
+  border: 2px solid rgba(17, 24, 39, 0.82);
+  border-radius: 14px 17px 13px 16px;
+  background: rgba(255, 250, 240, 0.88);
+  color: #111827;
+  box-shadow: 2px 3px 0 rgba(17, 24, 39, 0.24);
+}
+
+#gameInfo strong {
+  color: #dc2626;
+}
+
+/* ===== Character / Difficulty Notebook Memo Polish ===== */
+
+#characterScreen,
+#difficultyScreen {
+  padding: 34px;
+  background: rgba(255, 250, 240, 0.08);
+  backdrop-filter: none;
+  overflow: hidden;
+}
+
+#characterScreen::before,
+#difficultyScreen::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 390px;
+  height: 520px;
+  transform: translate(-50%, -50%) rotate(0.7deg);
+  border: 3px solid rgba(17, 24, 39, 0.82);
+  border-radius: 18px 22px 20px 16px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 34px,
+      rgba(248, 113, 113, 0.24) 35px 37px,
+      transparent 38px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 250, 240, 0.98) 0,
+      rgba(255, 250, 240, 0.98) 25px,
+      rgba(96, 165, 250, 0.18) 26px,
+      rgba(255, 250, 240, 0.98) 27px
+    );
+  box-shadow:
+    7px 9px 0 rgba(17, 24, 39, 0.22),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+  z-index: 0;
+}
+
+#characterScreen::after,
+#difficultyScreen::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 275px);
+  width: 116px;
+  height: 28px;
+  transform: translateX(-50%) rotate(-1.4deg);
+  border-radius: 5px;
+  background: rgba(250, 204, 21, 0.42);
+  box-shadow:
+    0 2px 0 rgba(161, 98, 7, 0.18),
+    inset 0 0 12px rgba(255, 255, 255, 0.32);
+  z-index: 1;
+}
+
+#characterScreen > *,
+#difficultyScreen > * {
+  position: relative;
+  z-index: 2;
+}
+
+#characterScreen h2,
+#difficultyScreen h2 {
+  margin-bottom: 14px;
+  padding: 0 12px 4px;
+  color: #111827;
+  font-size: 34px;
+  line-height: 1.1;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.75),
+    -1px 0 0 rgba(248, 113, 113, 0.22);
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.5) 48% 82%,
+    transparent 82%
+  );
+  transform: rotate(-0.6deg);
+}
+
+#characterSelect,
+#difficultySelect {
+  margin: 14px 0 0;
+}
+
+#characterScreen p,
+#difficultyScreen p,
+.characterMoveGuide,
+.difficultyMoveGuide {
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.characterPreview,
+.difficultyPreview {
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.characterArrowText,
+.difficultyArrowText {
+  color: #dc2626;
+  font-size: 30px;
+  font-weight: 900;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.75),
+    0 0 0 transparent;
+}
+
+.characterDisplay,
+.difficultyDisplay {
+  width: 190px;
+  min-height: 220px;
+  padding: 18px 16px;
+  border: 2px dashed rgba(17, 24, 39, 0.72);
+  border-radius: 18px 22px 18px 20px;
+  background:
+    linear-gradient(transparent 0 94%, rgba(96, 165, 250, 0.14) 94%),
+    rgba(255, 255, 255, 0.5);
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.16);
+  transform: rotate(-0.3deg);
+}
+
+.difficultyDisplay {
+  transform: rotate(0.35deg);
+}
+
+.characterImageText {
+  width: 132px;
+  height: 132px;
+  margin-bottom: 16px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 250, 240, 0.92), rgba(250, 204, 21, 0.16) 62%, rgba(17, 24, 39, 0.08) 100%);
+  color: #111827;
+  font-size: 54px;
+  line-height: 1;
+  text-align: center;
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border: 2px dashed rgba(17, 24, 39, 0.38);
+}
+
+.characterPreviewImage {
+  display: block;
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  filter:
+    drop-shadow(2px 3px 0 rgba(17, 24, 39, 0.28))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.42));
+}
+
+.characterPreviewImage.power {
+  width: 124px;
+  height: 124px;
+}
+
+.characterPreviewImage.homing {
+  width: 118px;
+  height: 118px;
+}
+
+.characterImageText.is-power {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 247, 237, 0.96), rgba(251, 146, 60, 0.18) 62%, rgba(17, 24, 39, 0.08) 100%);
+}
+
+.characterImageText.is-homing {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(239, 246, 255, 0.96), rgba(96, 165, 250, 0.18) 62%, rgba(17, 24, 39, 0.08) 100%);
+}
+
+#characterNameText,
+#difficultyNameText {
+  color: #111827;
+  font-size: 21px;
+  font-weight: 900;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.52),
+    0 0 0 transparent;
+}
+
+.difficultyImageText {
+  width: 104px;
+  height: 104px;
+  margin-bottom: 18px;
+  border-radius: 22px;
+  border: 2px dashed rgba(17, 24, 39, 0.42);
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 250, 240, 0.96), rgba(250, 204, 21, 0.22) 62%, rgba(17, 24, 39, 0.08) 100%);
+  color: #111827;
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 104px;
+  text-align: center;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.72),
+    -1px 0 0 rgba(248, 113, 113, 0.18);
+}
+
+.difficultyStarsText {
+  color: #dc2626;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 rgba(250, 204, 21, 0.56);
+}
+
+.characterDescriptionBox {
+  width: 320px;
+  max-width: 100%;
+  margin: 0 auto 14px;
+  padding: 15px 16px;
+  border: 2px dashed rgba(17, 24, 39, 0.68);
+  border-radius: 13px 16px 14px 12px;
+  background:
+    linear-gradient(transparent 0 94%, rgba(96, 165, 250, 0.16) 94%),
+    rgba(255, 255, 255, 0.54);
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.16);
+  transform: rotate(0.35deg);
+}
+
+#characterDescriptionText {
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.characterConfirmGuide,
+.difficultyConfirmGuide {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 10px 4px;
+  color: #dc2626;
+  font-size: 15px;
+  font-weight: 900;
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.45) 48% 82%,
+    transparent 82%
+  );
+  text-shadow: none;
+}
+
+/* ===== Result / Nickname / Pause Notebook Polish ===== */
+
+#gameOverScreen,
+#nicknameScreen {
+  padding: 34px;
+  background: rgba(255, 250, 240, 0.08);
+  backdrop-filter: none;
+  overflow: hidden;
+}
+
+#gameOverScreen::before,
+#nicknameScreen::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 360px;
+  height: 420px;
+  transform: translate(-50%, -50%) rotate(-0.8deg);
+  border: 3px solid rgba(17, 24, 39, 0.82);
+  border-radius: 18px 22px 20px 16px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 34px,
+      rgba(248, 113, 113, 0.24) 35px 37px,
+      transparent 38px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 250, 240, 0.98) 0,
+      rgba(255, 250, 240, 0.98) 25px,
+      rgba(96, 165, 250, 0.18) 26px,
+      rgba(255, 250, 240, 0.98) 27px
+    );
+  box-shadow:
+    7px 9px 0 rgba(17, 24, 39, 0.22),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+  z-index: 0;
+}
+
+#gameOverScreen::after,
+#nicknameScreen::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 224px);
+  width: 112px;
+  height: 28px;
+  transform: translateX(-50%) rotate(1.2deg);
+  border-radius: 5px;
+  background: rgba(250, 204, 21, 0.42);
+  box-shadow:
+    0 2px 0 rgba(161, 98, 7, 0.18),
+    inset 0 0 12px rgba(255, 255, 255, 0.32);
+  z-index: 1;
+}
+
+#gameOverScreen > *,
+#nicknameScreen > * {
+  position: relative;
+  z-index: 2;
+}
+
+#gameOverScreen h2,
+#nicknameScreen h2 {
+  margin-bottom: 16px;
+  padding: 0 12px 4px;
+  color: #111827;
+  font-size: 34px;
+  line-height: 1.1;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.75),
+    -1px 0 0 rgba(248, 113, 113, 0.22);
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.5) 48% 82%,
+    transparent 82%
+  );
+  transform: rotate(-0.6deg);
+}
+
+#gameOverScreen p,
+#nicknameScreen p {
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+#finalScoreText {
+  display: inline-block;
+  margin: 10px 0 28px;
+  padding: 0 14px 4px;
+  color: #dc2626;
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.72),
+    -1px 0 0 rgba(17, 24, 39, 0.2);
+  background: linear-gradient(
+    transparent 50%,
+    rgba(250, 204, 21, 0.45) 50% 84%,
+    transparent 84%
+  );
+}
+
+#nicknameInput {
+  width: 240px;
+  margin: 18px 0 22px;
+  padding: 13px 14px;
+  border: 3px solid #111827;
+  border-radius: 12px 15px 13px 14px;
+  background:
+    linear-gradient(transparent 65%, rgba(96, 165, 250, 0.18) 65% 72%, transparent 72%),
+    rgba(255, 250, 240, 0.96);
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.18);
+}
+
+#nicknameInput::placeholder {
+  color: rgba(17, 24, 39, 0.45);
+}
+
+#nicknameInput:focus {
+  border-color: #2563eb;
+  box-shadow:
+    3px 4px 0 rgba(17, 24, 39, 0.18),
+    0 0 0 3px rgba(96, 165, 250, 0.18);
+}
+
+#restartButton,
+#saveRankButton {
+  min-width: 160px;
+  padding: 12px 22px;
+  border: 3px solid #111827;
+  border-radius: 16px 20px 15px 19px;
+  background:
+    linear-gradient(transparent 50%, rgba(250, 204, 21, 0.46) 50% 78%, transparent 78%),
+    #fffaf0;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 900;
+  box-shadow: 4px 5px 0 rgba(17, 24, 39, 0.82);
+  transform: rotate(-0.5deg);
+  filter: none;
+}
+
+#restartButton:hover,
+#saveRankButton:hover {
+  background:
+    linear-gradient(transparent 42%, rgba(244, 114, 182, 0.32) 42% 78%, transparent 78%),
+    #fffaf0;
+  color: #111827;
+  transform: translate(1px, 1px) rotate(0.4deg);
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.82);
+  filter: none;
+}
+
+/* ===== Pause Screen Notebook Polish ===== */
+
+.pause-screen {
+  background: rgba(17, 24, 39, 0.18);
+  backdrop-filter: none;
+}
+
+.pause-panel {
+  width: min(300px, 78%);
+  padding: 28px 24px 24px;
+  border: 3px solid rgba(17, 24, 39, 0.82);
+  border-radius: 18px 22px 20px 16px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 28px,
+      rgba(248, 113, 113, 0.2) 29px 31px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 250, 240, 0.98) 0,
+      rgba(255, 250, 240, 0.98) 25px,
+      rgba(96, 165, 250, 0.16) 26px,
+      rgba(255, 250, 240, 0.98) 27px
+    );
+  box-shadow:
+    7px 9px 0 rgba(17, 24, 39, 0.24),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+  text-align: center;
+  transform: rotate(-0.6deg);
+}
+
+.pause-title {
+  display: inline-block;
+  margin: 0 0 22px;
+  padding: 0 12px 4px;
+  color: #000000;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: none;
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.5) 48% 82%,
+    transparent 82%
+  );
+}
+
+.pause-panel button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px 16px;
+  border: 2px solid #111827;
+  border-radius: 14px 17px 13px 16px;
+  background: #fffaf0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow: 3px 4px 0 rgba(17, 24, 39, 0.72);
+}
+
+.pause-panel button:hover {
+  background:
+    linear-gradient(transparent 48%, rgba(250, 204, 21, 0.42) 48% 78%, transparent 78%),
+    #fffaf0;
+  border-color: #111827;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 3px 0 rgba(17, 24, 39, 0.72);
+}
+
+.pause-guide {
+  display: inline-block;
+  margin: 18px 0 0;
+  padding: 0 8px 3px;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 900;
+  text-shadow: none;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(250, 204, 21, 0.4) 50% 82%,
+    transparent 82%
+  );
 }

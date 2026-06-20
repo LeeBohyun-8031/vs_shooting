@@ -1,22 +1,54 @@
 #rankingButton {
   position: absolute;
-  left: calc(50% - 240px);
-  bottom: calc(50% - 320px + 16px);
+  left: calc(50% - 240px + 24px);
+  bottom: calc(50% - 320px + 18px);
   z-index: 20;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.9);
-  color: #e0f2fe;
+
+  padding: 9px 15px;
+  border: 2px solid #111827;
+  border-radius: 12px 16px 14px 12px;
+
+  background:
+    linear-gradient(
+      transparent 48%,
+      rgba(250, 204, 21, 0.42) 48% 80%,
+      transparent 80%
+    ),
+    #fffaf0;
+
+  color: #111827;
   font-size: 14px;
-  font-weight: 700;
-  border: 1px solid rgba(125, 211, 252, 0.45);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.22);
-  transition: transform 0.15s ease, background 0.15s ease;
+  font-weight: 900;
+
+  box-shadow:
+    3px 4px 0 rgba(17, 24, 39, 0.72),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+
+  transform: rotate(-2.4deg);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 #rankingButton:hover {
-  transform: translateY(-2px);
-  background: rgba(30, 41, 59, 0.95);
+  background:
+    linear-gradient(
+      transparent 42%,
+      rgba(244, 114, 182, 0.32) 42% 80%,
+      transparent 80%
+    ),
+    #fffaf0;
+
+  transform: translate(1px, 1px) rotate(-1deg);
+  box-shadow:
+    2px 3px 0 rgba(17, 24, 39, 0.72),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+#rankingButton:active {
+  transform: translate(3px, 4px) rotate(0deg);
+  box-shadow: none;
 }
 
 #rankingButton.hidden {
@@ -30,7 +62,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(17, 24, 39, 0.28);
   z-index: 50;
 }
 
@@ -39,54 +71,170 @@
 }
 
 .modalContent {
-  width: 360px;
+  position: relative;
+  width: 380px;
   max-width: 100%;
-  padding: 22px;
-  border-radius: 18px;
-  background: #0f172a;
-  border: 1px solid rgba(125, 211, 252, 0.38);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  padding: 28px 26px 24px;
+
+  border: 3px solid rgba(17, 24, 39, 0.84);
+  border-radius: 18px 22px 20px 16px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 34px,
+      rgba(248, 113, 113, 0.22) 35px 37px,
+      transparent 38px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 250, 240, 0.98) 0,
+      rgba(255, 250, 240, 0.98) 25px,
+      rgba(96, 165, 250, 0.17) 26px,
+      rgba(255, 250, 240, 0.98) 27px
+    );
+
+  color: #111827;
+
+  box-shadow:
+    9px 11px 0 rgba(17, 24, 39, 0.26),
+    0 18px 50px rgba(17, 24, 39, 0.22),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+
+  transform: rotate(-0.6deg);
+}
+
+.modalContent::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -16px;
+  width: 116px;
+  height: 30px;
+  transform: translateX(-50%) rotate(1.4deg);
+
+  border-radius: 5px;
+  background: rgba(250, 204, 21, 0.46);
+  box-shadow:
+    0 2px 0 rgba(161, 98, 7, 0.16),
+    inset 0 0 12px rgba(255, 255, 255, 0.32);
 }
 
 .modalHeader {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .modalHeader h2 {
-  font-size: 22px;
-  color: #e0f2fe;
+  display: inline-block;
+  padding: 0 10px 4px;
+
+  color: #111827;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+
+  background: linear-gradient(
+    transparent 48%,
+    rgba(250, 204, 21, 0.52) 48% 82%,
+    transparent 82%
+  );
+
+  text-shadow:
+    1px 1px 0 rgba(250, 204, 21, 0.7),
+    -1px 0 0 rgba(248, 113, 113, 0.18);
 }
 
 #closeRankingButton {
-  padding: 7px 11px;
-  border-radius: 999px;
-  background: rgba(51, 65, 85, 0.9);
-  color: #ffffff;
+  padding: 7px 12px;
+
+  border: 2px solid #111827;
+  border-radius: 12px 15px 13px 14px;
+
+  background: #fffaf0;
+  color: #111827;
+
   font-size: 13px;
+  font-weight: 900;
+
+  box-shadow: 2px 3px 0 rgba(17, 24, 39, 0.72);
+  transform: rotate(1.2deg);
 }
 
 #closeRankingButton:hover {
-  background: rgba(71, 85, 105, 0.95);
+  background:
+    linear-gradient(
+      transparent 46%,
+      rgba(244, 114, 182, 0.28) 46% 80%,
+      transparent 80%
+    ),
+    #fffaf0;
+
+  transform: translate(1px, 1px) rotate(0.4deg);
+  box-shadow: 1px 2px 0 rgba(17, 24, 39, 0.72);
 }
 
 #rankingList {
-  list-style-position: inside;
+  list-style: none;
+  counter-reset: ranking;
 }
 
 #rankingList li {
+  counter-increment: ranking;
+
+  position: relative;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
+
   margin-bottom: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  color: #cbd5e1;
+  padding: 12px 14px 12px 42px;
+
+  border: 2px dashed rgba(17, 24, 39, 0.48);
+  border-radius: 13px 16px 14px 12px;
+
+  background:
+    linear-gradient(
+      transparent 0 94%,
+      rgba(96, 165, 250, 0.14) 94%
+    ),
+    rgba(255, 255, 255, 0.46);
+
+  color: #111827;
   font-size: 15px;
+  font-weight: 800;
+
+  box-shadow: 2px 3px 0 rgba(17, 24, 39, 0.12);
+}
+
+#rankingList li::before {
+  content: counter(ranking);
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: translateY(-50%) rotate(-4deg);
+
+  border: 2px solid #111827;
+  border-radius: 999px;
+
+  background: rgba(250, 204, 21, 0.46);
+  color: #111827;
+
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 #rankingList li:last-child {
@@ -94,13 +242,15 @@
 }
 
 .rankName {
-  color: #e2e8f0;
-  font-weight: 700;
+  color: #111827;
+  font-weight: 900;
+  word-break: keep-all;
 }
 
 .rankScore {
-  color: #facc15;
-  font-weight: 800;
+  color: #dc2626;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .sound-toggle-button {
@@ -116,35 +266,55 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(125, 211, 252, 0.55);
-  border-radius: 999px;
+  border: 2px solid #111827;
+  border-radius: 14px 17px 13px 16px;
 
-  background: rgba(15, 23, 42, 0.88);
-  color: #e0f2fe;
+  background:
+    linear-gradient(
+      transparent 48%,
+      rgba(96, 165, 250, 0.18) 48% 78%,
+      transparent 78%
+    ),
+    #fffaf0;
 
-  font-size: 22px;
+  color: #111827;
+
+  font-size: 21px;
   line-height: 1;
 
   cursor: pointer;
-  box-shadow:
-    0 0 16px rgba(56, 189, 248, 0.22),
-    inset 0 0 10px rgba(125, 211, 252, 0.12);
 
-  backdrop-filter: blur(10px);
+  box-shadow:
+    3px 4px 0 rgba(17, 24, 39, 0.72),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+
+  transform: rotate(2deg);
 
   transition:
     transform 0.15s ease,
-    background 0.15s ease,
     opacity 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 .sound-toggle-button:hover {
-  transform: translateY(-2px);
-  background: rgba(30, 41, 59, 0.95);
+  background:
+    linear-gradient(
+      transparent 44%,
+      rgba(250, 204, 21, 0.38) 44% 78%,
+      transparent 78%
+    ),
+    #fffaf0;
+
+  transform: translate(1px, 1px) rotate(0.8deg);
   box-shadow:
-    0 0 22px rgba(56, 189, 248, 0.32),
-    inset 0 0 12px rgba(125, 211, 252, 0.18);
+    2px 3px 0 rgba(17, 24, 39, 0.72),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+.sound-toggle-button:active {
+  transform: translate(3px, 4px) rotate(0deg);
+  box-shadow: none;
 }
 
 .sound-toggle-button.muted {

@@ -1,7 +1,101 @@
+const BOSS_ASSET_PATHS = {
+  1: "assets/images/boss/stage1_boss.png",
+  2: "assets/images/boss/stage2_boss.png",
+};
+
+const BOSS_ASSET_IMAGES = createBossAssetImages();
+
+function createBossAssetImages() {
+  const images = {};
+
+  Object.keys(BOSS_ASSET_PATHS).forEach((stageNumber) => {
+    const image = new Image();
+
+    image.src = BOSS_ASSET_PATHS[stageNumber];
+    image.loaded = false;
+    image.failed = false;
+
+    image.onload = () => {
+      image.loaded = true;
+    };
+
+    image.onerror = () => {
+      image.failed = true;
+    };
+
+    images[stageNumber] = image;
+  });
+
+  return images;
+}
+
 function drawBoss() {
   if (!boss) return;
   if (stagePhase !== "boss") return;
 
+  if (!drawBossAssetImage()) {
+    drawFallbackBoss();
+  }
+
+  drawBossHpBar();
+}
+
+function drawBossAssetImage() {
+  const image = getCurrentBossAssetImage();
+
+  if (!image) {
+    return false;
+  }
+
+  const centerX = boss.x + boss.width / 2;
+  const centerY = boss.y + boss.height / 2;
+  const stageNumber = getBossRendererStageNumber();
+  const isHit = boss.hitFlashTime > 0;
+
+  const renderScale = stageNumber >= 2 ? 1.65 : 1.85;
+  const drawWidth = boss.width * renderScale;
+  const drawHeight = boss.height * renderScale;
+
+  const drawX = centerX - drawWidth / 2;
+  const drawY = centerY - drawHeight / 2 - 4;
+
+  ctx.save();
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.shadowColor = isHit ? "#fecaca" : getBossAssetGlowColor(stageNumber);
+  ctx.shadowBlur = isHit ? 26 : 16;
+
+  if (isHit) {
+    ctx.filter = "brightness(1.45) saturate(1.25)";
+  }
+
+  ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+
+  ctx.restore();
+
+  return true;
+}
+
+function getCurrentBossAssetImage() {
+  const stageNumber = getBossRendererStageNumber();
+  const image = BOSS_ASSET_IMAGES[stageNumber];
+
+  if (!image || image.failed || !image.loaded) {
+    return null;
+  }
+
+  return image;
+}
+
+function getBossAssetGlowColor(stageNumber) {
+  if (stageNumber >= 2) {
+    return "#7f1d1d";
+  }
+
+  return "#67e8f9";
+}
+
+function drawFallbackBoss() {
   const centerX = boss.x + boss.width / 2;
   const centerY = boss.y + boss.height / 2;
   const isHit = boss.hitFlashTime > 0;
@@ -60,8 +154,6 @@ function drawBoss() {
   ctx.stroke();
 
   ctx.restore();
-
-  drawBossHpBar();
 }
 
 function drawBossHpBar() {
@@ -93,4 +185,20 @@ function drawBossHpBar() {
   ctx.fillText(boss.name, CANVAS_WIDTH / 2, y - 5);
 
   ctx.restore();
+}
+
+function getBossRendererStageNumber() {
+  if (typeof getCurrentStageConfig === "function") {
+    const stageConfig = getCurrentStageConfig();
+
+    if (stageConfig && Number.isFinite(stageConfig.stage)) {
+      return stageConfig.stage;
+    }
+  }
+
+  if (typeof currentStageIndex === "number" && Number.isFinite(currentStageIndex)) {
+    return currentStageIndex + 1;
+  }
+
+  return 1;
 }
