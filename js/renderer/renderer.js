@@ -2,6 +2,7 @@ function draw() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   drawBackground();
+  drawStageTimer();
   drawBullets();
   drawEnemyBullets();
   drawEnemies();
@@ -11,6 +12,7 @@ function draw() {
   drawPlayerHitbox();
   drawParticles();
   drawPlayerDeathAnimation();
+  drawStageOverlay();
 }
 
 function drawBackground() {
@@ -341,4 +343,123 @@ function drawPlayerDeathAnimation() {
   ctx.fill();
 
   ctx.restore();
+}
+
+function drawStageOverlay() {
+  if (gameState !== "playing") return;
+
+  if (stagePhase === "bossIntro") {
+    drawBossApproachingOverlay();
+    return;
+  }
+
+  if (stagePhase === "boss") {
+    drawBossReadyOverlay();
+  }
+}
+
+function drawBossApproachingOverlay() {
+  const centerX = CANVAS_WIDTH / 2;
+  const centerY = CANVAS_HEIGHT / 2 - 30;
+  const pulse = 0.65 + Math.sin(performance.now() * 0.008) * 0.35;
+
+  ctx.save();
+
+  ctx.fillStyle = `rgba(2, 6, 23, ${0.32 + pulse * 0.18})`;
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  ctx.shadowColor = "#ef4444";
+  ctx.shadowBlur = 18;
+
+  ctx.fillStyle = "#fecaca";
+  ctx.font = "bold 28px Arial";
+  ctx.fillText("BOSS APPROACHING", centerX, centerY);
+
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = "#e2e8f0";
+  ctx.font = "bold 15px Arial";
+
+  const stageConfig =
+    typeof getCurrentStageConfig === "function"
+      ? getCurrentStageConfig()
+      : null;
+
+  const stageName = stageConfig ? stageConfig.name : "Stage";
+
+  ctx.fillText(stageName, centerX, centerY + 34);
+
+  ctx.restore();
+}
+
+function drawBossReadyOverlay() {
+  const centerX = CANVAS_WIDTH / 2;
+  const y = 42;
+  const pulse = 0.55 + Math.sin(performance.now() * 0.006) * 0.25;
+
+  ctx.save();
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "bold 16px Arial";
+  ctx.fillStyle = `rgba(254, 202, 202, ${pulse})`;
+  ctx.fillText("BOSS STAGE", centerX, y);
+
+  ctx.restore();
+}
+
+function drawStageTimer() {
+  if (gameState !== "playing") return;
+  if (stagePhase !== "normal") return;
+  if (typeof getStageRemainingTime !== "function") return;
+
+  const remainingTime = getStageRemainingTime();
+  const timeText = formatStageTime(remainingTime);
+
+  ctx.save();
+
+  ctx.textAlign = "right";
+  ctx.textBaseline = "top";
+
+  ctx.font = "bold 13px Arial";
+
+  const x = CANVAS_WIDTH - 12;
+  const y = 10;
+  const paddingX = 8;
+  const paddingY = 5;
+  const text = `TIME ${timeText}`;
+  const textWidth = ctx.measureText(text).width;
+
+  ctx.fillStyle = "rgba(2, 6, 23, 0.58)";
+  ctx.fillRect(
+    x - textWidth - paddingX * 2,
+    y - 3,
+    textWidth + paddingX * 2,
+    23
+  );
+
+  ctx.strokeStyle = "rgba(125, 211, 252, 0.35)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(
+    x - textWidth - paddingX * 2,
+    y - 3,
+    textWidth + paddingX * 2,
+    23
+  );
+
+  ctx.fillStyle = "#bae6fd";
+  ctx.fillText(text, x - paddingX, y + paddingY - 1);
+
+  ctx.restore();
+}
+
+function formatStageTime(milliseconds) {
+  const totalSeconds = Math.ceil(Math.max(milliseconds, 0) / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
 }

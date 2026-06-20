@@ -53,7 +53,7 @@ function getEnemySpawnCooldown() {
 }
 
 function updateEnemies(timestamp) {
-  if (timestamp - lastEnemySpawnTime > getEnemySpawnCooldown()) {
+  if (canSpawnNormalEnemy(timestamp)) {
     spawnEnemy();
     lastEnemySpawnTime = timestamp;
   }
@@ -65,6 +65,14 @@ function updateEnemies(timestamp) {
 
     return !isEnemyOutOfScreen(enemy);
   });
+}
+
+function canSpawnNormalEnemy(timestamp) {
+  if (typeof isEnemySpawnAllowed === "function" && !isEnemySpawnAllowed()) {
+    return false;
+  }
+
+  return timestamp - lastEnemySpawnTime > getEnemySpawnCooldown();
 }
 
 function updateEnemyMovement(enemy) {

@@ -110,6 +110,17 @@ const POWER_UP_REQUIREMENTS = {
   },
 };
 
+const STAGE_CONFIGS = [
+  {
+    stage: 1,
+    name: "Stage 1",
+    normalDuration: 150000,
+    bossIntroDuration: 4000,
+    bossHp: 300,
+    bossPattern: "basic",
+  },
+];
+
 const CHARACTER_CONFIGS = [
   {
     type: "homing",

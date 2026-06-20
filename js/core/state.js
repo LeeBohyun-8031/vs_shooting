@@ -30,6 +30,14 @@ let items = [];
 let particles = [];
 let stars = [];
 
+let currentStageIndex = 0;
+let stagePhase = "normal";
+let stageStartTime = 0;
+let bossIntroStartTime = 0;
+let boss = null;
+
+let pausedStartTime = 0;
+
 let lastShotTime = 0;
 let lastEnemySpawnTime = 0;
 let bombPressed = false;

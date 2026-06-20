@@ -28,6 +28,7 @@ function resetGame() {
   lastShotTime = 0;
   lastEnemySpawnTime = 0;
   bombPressed = false;
+  pausedStartTime = 0;
 
   deathAnimationStartTime = 0;
   deathAnimationX = 0;
@@ -35,6 +36,10 @@ function resetGame() {
 
   if (typeof resetItems === "function") {
     resetItems();
+  }
+
+  if (typeof resetStageState === "function") {
+    resetStageState();
   }
 
   updateGameInfo();
@@ -47,6 +52,10 @@ function startGame() {
   gameState = "playing";
 
   hidePauseScreen();
+
+  if (typeof startStage === "function") {
+    startStage(0);
+  }
 
   startScreen.classList.remove("active");
   characterScreen.classList.remove("active");
@@ -64,6 +73,8 @@ function pauseGame() {
   if (gameState !== "playing") return;
 
   gameState = "paused";
+  pausedStartTime = performance.now();
+
   resetInputState();
 
   cancelAnimationFrame(animationId);
@@ -76,7 +87,15 @@ function pauseGame() {
 function resumeGame() {
   if (gameState !== "paused") return;
 
+  const pauseDuration = performance.now() - pausedStartTime;
+
+  if (typeof applyStagePauseDuration === "function") {
+    applyStagePauseDuration(pauseDuration);
+  }
+
+  pausedStartTime = 0;
   gameState = "playing";
+
   resetInputState();
 
   hidePauseScreen();
@@ -97,6 +116,10 @@ function restartPausedGame() {
   resetGame();
 
   gameState = "playing";
+
+  if (typeof startStage === "function") {
+    startStage(0);
+  }
 
   rankingButton.classList.add("hidden");
 
@@ -177,6 +200,11 @@ function gameLoop(timestamp) {
 
 function update(timestamp) {
   updateStars();
+
+  if (typeof updateStage === "function") {
+    updateStage(timestamp);
+  }
+
   updatePlayer();
   updateBullets();
   updateEnemies(timestamp);
