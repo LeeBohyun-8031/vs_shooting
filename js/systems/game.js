@@ -1,3 +1,15 @@
+const GAME_FRAME_RATE = 60;
+const GAME_FRAME_DURATION = 1000 / GAME_FRAME_RATE;
+const MAX_FRAME_CATCH_UP = GAME_FRAME_DURATION * 3;
+
+let lastGameFrameTimestamp = 0;
+let gameFrameAccumulator = 0;
+
+function resetGameFrameClock() {
+  lastGameFrameTimestamp = 0;
+  gameFrameAccumulator = 0;
+}
+
 function createStars() {
   stars = [];
 
@@ -67,6 +79,7 @@ function startGame() {
   rankingButton.classList.add("hidden");
 
   cancelAnimationFrame(animationId);
+  resetGameFrameClock();
   animationId = requestAnimationFrame(gameLoop);
 }
 
@@ -107,6 +120,7 @@ function resumeGame() {
   lastShotTime = Date.now();
 
   cancelAnimationFrame(animationId);
+  resetGameFrameClock();
   animationId = requestAnimationFrame(gameLoop);
 }
 
@@ -128,6 +142,7 @@ function restartPausedGame() {
   rankingButton.classList.add("hidden");
 
   cancelAnimationFrame(animationId);
+  resetGameFrameClock();
   animationId = requestAnimationFrame(gameLoop);
 }
 
@@ -192,12 +207,29 @@ function updateGameInfo() {
 function gameLoop(timestamp) {
   if (gameState !== "playing" && gameState !== "dying") return;
 
-  if (gameState === "playing") {
-    update(timestamp);
+  if (lastGameFrameTimestamp === 0) {
+    lastGameFrameTimestamp = timestamp;
+    gameFrameAccumulator = GAME_FRAME_DURATION;
+  } else {
+    const elapsed = Math.min(
+      Math.max(timestamp - lastGameFrameTimestamp, 0),
+      MAX_FRAME_CATCH_UP
+    );
+
+    lastGameFrameTimestamp = timestamp;
+    gameFrameAccumulator += elapsed;
   }
 
-  if (gameState === "dying") {
-    updateDeathAnimation();
+  while (gameFrameAccumulator >= GAME_FRAME_DURATION) {
+    if (gameState === "playing") {
+      update(timestamp);
+    }
+
+    if (gameState === "dying") {
+      updateDeathAnimation();
+    }
+
+    gameFrameAccumulator -= GAME_FRAME_DURATION;
   }
 
   draw();
